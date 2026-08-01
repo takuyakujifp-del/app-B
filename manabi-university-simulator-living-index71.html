@@ -1,0 +1,3463 @@
+<!DOCTYPE html>
+<!--
+  更新履歴（このコメントは画面には表示されません。ファイル名の index の数字は更新のたびに1つずつ増やします）
+  ------------------------------------------------------------------
+  index71（2026-08-02）
+    ・仕送り・アルバイトのプルダウンが、スマートフォンで崩れて表示される問題を直した。
+      iOS・Androidのプルダウンは表示幅が固定のため、
+      「3万円/月（年間 36万円）」のような長いラベルが2行に折り返され、
+      1行の項目と2行の項目が混在して読みにくくなっていた。
+      ラベルを「3万円（年36万円）」の形に約3割短くして、全項目が1行に収まるようにした。
+      ・「/月」は入力欄のラベル（仕送り月額・アルバイト月額）で分かるため省いた。
+      ・「年間」は「年」に縮めた。
+      ・最長の項目は「30万円（年360万円）」になる。
+    ・ラベルを短くしたぶん、仕送りのプルダウンの下に
+      「選択中：月 50,000円 ／ 年間 600,000円」の表示を追加した。
+      選んだあとに月額・年額の両方を確かめられるようにするため。
+      「利用しない」に戻すと表示も消える。直接入力した場合も同じように出る。
+      アルバイトは「年収の壁」の警告欄が同じ役割を果たしているため付けていない。
+
+  index70（2026-08-01）
+    ・【スマホ対策1】STEP6の結果画面に「結果の目次」を追加した。ヒーローカードの
+      直後に、各カードの見出しをタップで移動できるリンク一覧として表示する。
+      結果を描き直すたびに result-root 直下のカードを自動で走査して作るため、
+      カードを増減してもコードを直す必要はない。折りたたみのカード（年次別の負担額・
+      計算式など）は、目次から飛ぶと自動的に開く。
+    ・【スマホ対策2】画面右下に「▲上へ」の固定ボタンを追加した。400px以上
+      スクロールしたときだけ表示される。印刷時は目次とともに非表示。
+    ・【スマホ対策3】「年次別の負担額」の表を、640px以下の画面幅では
+      年次ごとのカード表示に切り替えるようにした（最大10列の横スクロールを解消）。
+      表とカードは同じ列定義（yrCols）から生成しているため、内容は完全に同じ。
+      パソコン幅では従来どおりの表を表示する。
+
+  index69（2026-08-01）
+    ・仕送り・アルバイトのプルダウンの一番下に「＋ 上記以外の金額を入力する」を追加した。
+      これを選ぶと下に金額の入力欄が出て、1円単位で自由に入力できる。
+      1万円未満の端数がある場合や、プルダウンの上限（仕送り月30万円／
+      アルバイト月20万円）を超える場合に使う想定。
+      別の金額をプルダウンから選び直すと入力欄は自動的に閉じて中身も消える。
+      「利用しない」に戻したときも同様に閉じる。
+
+  index68（2026-08-01）
+    ・仕送りの意味を画面上で明確にした。カード名を「仕送り（家庭からの送金）」→
+      「仕送り（家庭から出す金額）」に変更し、注記に
+      「生活費として送る分が中心だが、生活費で使い切らなかった分は学費にも充てて計算する」
+      「学費と生活費をまかなうために家庭から毎月いくら出す想定か、を選ぶ」旨を明記した。
+      高額な仕送り（医学部など）を入れたときに、利用者が生活費だけの意味に受け取って
+      結果と食い違わないようにするため。計算ロジックは従来どおりで変更なし。
+    ・STEP6「生活費・仕送り・アルバイト」カードの説明にも、仕送りは生活費・学費の
+      どちらにも充てられるものとして合計から差し引いている旨を追記した。
+
+  index67（2026-08-01）
+    ・仕送りのプルダウンにも年間額を併記した（例：8万円/月（年間96万円））。
+      アルバイトと表記をそろえ、年間いくら送ることになるのかを見えるようにするため。
+    ・仕送りの上限を月20万円→月30万円に引き上げた（1万円刻み、31択）。
+      医学部・歯学部など6年制の学部で自宅外通学の場合、家賃・生活費の負担が大きく
+      月20万円では足りないケースがあるため。アルバイトの上限は月20万円のまま。
+    ・仕送りカードに、6年制学部・自宅外では高額になりやすい旨の注記を追加した。
+
+  index66（2026-08-01）
+    ・STEP5の「仕送り月額」「アルバイト月額」を、手入力の欄から
+      1万円単位のプルダウン（0円〜月20万円）に変更した。
+      スマートフォンでの利用を想定し、キーボードを出さずに選べるようにするため。
+      アルバイトのプルダウンは「年収の壁」の判定が年額ベースであることから、
+      選択肢に年間の金額も併記している（例：10万円/月（年間120万円））。
+      「利用しない」に戻したときはプルダウンも未選択に戻る。
+
+  index65（2026-07-31）
+    ・同じ意味なのに書き方が違っていた文言を統一した（画面に出る文言のみ）。
+      ・「給付奨学金」→「給付型奨学金」（STEP6の説明文、結果表の項目名2箇所、
+      　 トグルOFF時の注記2箇所、返還の説明）
+      　※ まなび大学の独自奨学金の固有名「給付奨学金Ａ/Ｂ/Ｃ」は変更していない
+      ・「貸与奨学金」→「貸与型奨学金」（結果表の項目名、未入力時の注記）
+      ・グラフ凡例等の「バイト収入」→「アルバイト収入」
+
+  index64（2026-07-31）
+    ・アルバイト注意書きの一覧で、123万円のラインにも「多子世帯の対象から外れる」を
+      追加した。160万円のラインには既に書いてあったが123万円側になかったため、
+      表記をそろえた。
+
+  index63（2026-07-31）
+    ・アルバイト注意書きに「学生本人は134万円まで非課税でも、親の扶養控除は
+      123万円で先に減りはじめる（本人の非課税と親の控除は別の壁）」という
+      注記を追加した。勤労学生控除は学生本人にのみ適用される控除で、
+      親の扶養控除の判定（合計所得金額ベース）には影響しないため、
+      本人が非課税のつもりで働き続けると気づかないうちに親の控除が
+      減っていることがある、という関係を明示するため。
+
+  index62（2026-07-31）
+    ・アルバイト月額の入力欄ラベルを「手取り目安」から「額面目安」に変更した。
+      年収の壁の判定基準は額面（税・社会保険料を引く前の収入）ベースのため、
+      手取りのままだと基準とずれるおそれがあったため。
+    ・アルバイト注意書きの一覧表示で、「⚠ 超」の文字を赤字にした
+      （超えていないラインの「○」は通常の色のまま）。
+
+  index61（2026-07-31）
+    ・アルバイト注意書きの脚注に「給与収入（アルバイト等）の基準です。フードデリバリー等の
+      個人事業主は、事業所得95万円以下が基準になります」という注意を追加した。
+      110万円・123万円・134万円・160万円のラインは、あくまで給与所得を前提とした
+      金額であることを明示するため。
+
+  index60（2026-07-31）
+    ・アルバイト注意書きを大幅に簡潔化した。長い説明文をやめ、
+      110万円／123万円／134万円／160万円の4本のラインを「○」「⚠超」だけの
+      短い一覧で見せる形に変更。信号機はそのまま残している。
+
+  index59（2026-07-31）
+    ・アルバイト注意書きの「多子世帯の扶養カウント」の基準を、JASSOの実際の資料
+      （高等教育の修学支援新制度 令和7年度からの多子世帯への授業料等無償化に係るFAQ p.5）
+      に合わせて修正した。従来は年齢を区別せず一律123万円としていたが、正しくは
+      　19歳以上23歳未満：160万円以下
+      　それ以外（19歳未満・23歳以上）：123万円以下
+      であるため、この2本立てに直した（令和8年10月分の判定から適用。令和7年1〜12月の
+      収入に基づく）。信号機の赤（対象外）の基準も、年齢によらず超えると対象外になる
+      160万円に統一した。
+      あわせて、独自に補足していた「特定親族特別控除」の説明は、JASSO資料には
+      ない情報のため削除し、表記をシンプルにした。
+
+  index58（2026-07-30）
+    ・アプリA（まなびシード 奨学金シミュレーター）からの判定結果の自動引き継ぎに対応。
+      URLパラメータ（?from=A&kz=…）を読み取り、STEP3の区分・通学形態・多子世帯・特例区分を自動入力する。
+      引き継いだ内容はSTEP3の先頭にバナーで明示し、手で選び直すこともできる。
+      国公立・短大・専門学校を選んでいた場合は、私立大学の学費で計算する旨の注意を表示する。
+      渡すのは区分などの選択結果のみで、氏名・収入額そのものは受け取らない。
+
+  index57（2026-07-30）
+    ・支出（学費・生活費）グラフの棒の中に金額を表示
+    ・自宅通学の生活費デフォルトを35,000円→0円に変更
+    ・STEP3にあった一時金の利用検討ボタンを廃止し、STEP6でいつでも金額を選べる方式に変更
+    ・支援側（授業料等減免・給付型・独自奨学金・仕送りバイト収入・貸与型/一時金）グラフの棒の中にも金額を表示
+    ・一時金の「教育ローンを利用できなかった方が対象」の注記を、金額選択時のみ表示するよう変更し、
+      黄×黒ストライプ（工事現場風）の枠で強調
+    ・「卒業までの借入総額」のフォントサイズを拡大
+    ・STEP5でアルバイト収入を入力した場合の注意書きを新設（住民税・扶養・多子世帯への影響、
+      青黄赤の信号機表示つき）
+    ・入力欄・プルダウンの文字サイズを14px→16pxに変更（iOS Safariでの自動ズームを防止）
+  ------------------------------------------------------------------
+-->
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MU 進学費用シミュレーター｜まなび大学</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ku-navy: #0A3A2A;
+  --ku-crimson: #0E7A4E;
+  --ku-crimson-l: #12945F;
+  --ku-crimson-pale: #2EAF7D;
+  --ku-blue: #145C48;
+  --ku-sky: #2E9E8F;
+  --ku-green: #0D9B6A;
+  --ku-gold: #C8960C;
+  --ku-red: #C0392B;
+  --bg: #F2F8F4;
+  --surface: #FFFFFF;
+  --border: #D8E7DD;
+  --text: #0D2B1E;
+  --text-2: #4A6E5C;
+  --text-3: #82A491;
+  --shadow: 0 2px 16px rgba(10,58,42,0.07);
+  --shadow-md: 0 6px 32px rgba(10,58,42,0.11);
+  --radius: 14px;
+  --radius-sm: 8px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Noto Sans JP', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* ─── HEADER ─── */
+.site-header {
+  background: var(--ku-navy);
+  padding: 0;
+  position: sticky; top: 0; z-index: 200;
+}
+.header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 24px;
+  border-bottom: 2px solid var(--ku-crimson);
+  max-width: 960px;
+  margin: 0 auto;
+  gap: 12px;
+}
+.ku-logo-area { display: flex; align-items: center; gap: 14px; }
+.ku-emblem {
+  width: 42px; height: 42px;
+  background: var(--ku-crimson);
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900; font-size: 14px;
+  color: white;
+  letter-spacing: -0.5px;
+  flex-shrink: 0;
+}
+.ku-title-area { flex: 1; }
+.ku-name {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 800; font-size: 13px;
+  color: rgba(255,255,255,0.9);
+  letter-spacing: 0.03em;
+}
+.ku-subtitle { font-size: 11px; color: rgba(255,255,255,0.48); margin-top: 1px; letter-spacing: 0.05em; }
+
+/* ─── PROGRESS STRIP ─── */
+.progress-strip { background: #062B1E; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.progress-strip::-webkit-scrollbar { display: none; }
+.steps-row { display: flex; max-width: 960px; margin: 0 auto; padding: 0 8px; min-width: max-content; }
+.s-tab {
+  flex: 1; min-width: 72px; padding: 9px 4px 8px;
+  text-align: center; cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: all 0.18s; position: relative;
+}
+.s-tab .s-num {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 22px; height: 22px; border-radius: 50%;
+  background: rgba(255,255,255,0.12);
+  font-family: 'Montserrat', sans-serif; font-size: 11px; font-weight: 700;
+  color: rgba(255,255,255,0.55); margin-bottom: 3px; transition: all 0.18s;
+}
+.s-tab .s-label { display: block; font-size: 9.5px; color: rgba(255,255,255,0.45); font-weight: 500; white-space: nowrap; }
+.s-tab.active { border-bottom-color: var(--ku-crimson); }
+.s-tab.active .s-num { background: var(--ku-crimson); color: white; }
+.s-tab.active .s-label { color: #7FE0AE; }
+.s-tab.done .s-num { background: var(--ku-sky); color: white; }
+.s-tab.done .s-label { color: rgba(255,255,255,0.6); }
+
+/* ─── MAIN ─── */
+main { max-width: 780px; margin: 0 auto; padding: 28px 16px 72px; }
+
+/* ─── STEP TITLE ─── */
+.step-header { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 20px; }
+.step-badge {
+  background: var(--ku-navy); color: #7FE0AE;
+  font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 11px;
+  padding: 5px 12px; border-radius: 999px; letter-spacing: 0.08em; white-space: nowrap; margin-top: 2px;
+}
+.step-title { font-size: 17px; font-weight: 900; color: var(--ku-navy); line-height: 1.3; }
+.step-desc { font-size: 12px; color: var(--text-2); margin-top: 4px; }
+
+/* ─── SECTIONS ─── */
+.section { display: none; animation: fadeSlide 0.28s ease; }
+.section.active { display: block; }
+@keyframes fadeSlide {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── CARD ─── */
+.card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 22px; margin-bottom: 14px; box-shadow: var(--shadow);
+}
+.card-title {
+  font-family: 'Montserrat', sans-serif; font-size: 11px; font-weight: 700;
+  color: var(--ku-crimson); letter-spacing: 0.08em; text-transform: uppercase;
+  margin-bottom: 16px; display: flex; align-items: center; gap: 8px;
+}
+.card-title::before {
+  content: ''; width: 3px; height: 14px;
+  background: linear-gradient(180deg, var(--ku-crimson), var(--ku-navy));
+  border-radius: 2px;
+}
+
+/* ─── FORM ELEMENTS ─── */
+.fg { display: flex; flex-direction: column; gap: 5px; margin-bottom: 14px; }
+.fg:last-child { margin-bottom: 0; }
+.fg label { font-size: 12px; font-weight: 600; color: var(--text-2); }
+.fg label .hint { font-weight: 400; color: var(--text-3); margin-left: 4px; font-size: 11px; }
+.input-wrap { position: relative; }
+.input-wrap input { padding-right: 32px; }
+.input-unit { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 12px; color: var(--text-3); pointer-events: none; }
+input.num-input, select {
+  border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+  padding: 10px 14px; font-size: 16px; font-family: inherit; color: var(--text);
+  background: white; width: 100%; outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s; -moz-appearance: textfield;
+}
+input.num-input:focus, select:focus {
+  border-color: var(--ku-sky); box-shadow: 0 0 0 3px rgba(46,158,143,0.15);
+}
+.field-error input, .field-error select { border-color: var(--ku-red) !important; box-shadow: 0 0 0 3px rgba(192,57,43,0.1) !important; }
+.yr-table .taiyo-cell { color: var(--ku-red); font-weight: 700; }
+.err-msg { display: none; font-size: 12px; color: var(--ku-red); font-weight: 600; padding: 6px 10px; background: rgba(192,57,43,0.06); border: 1px solid rgba(192,57,43,0.2); border-radius: 6px; margin-top: 4px; }
+.err-msg::before { content: '⚠ '; }
+.field-error .err-msg { display: block; }
+
+/* ─── TOGGLE ─── */
+.toggle-row { display: flex; gap: 6px; flex-wrap: wrap; }
+.tog-btn {
+  flex: 1; padding: 10px 8px; border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+  background: white; cursor: pointer; font-size: 13px; font-family: inherit; font-weight: 600;
+  color: var(--text-2); transition: all 0.15s; text-align: center;
+}
+.tog-btn.sel { border-color: var(--ku-crimson); background: rgba(14,122,78,0.07); color: var(--ku-crimson); }
+.tog-btn:disabled { cursor: not-allowed; opacity: 0.4; background: var(--bg); }
+.tog-btn:disabled.sel { border-color: var(--border); background: var(--bg); color: var(--text-3); }
+
+/* ─── FACULTY CARDS ─── */
+.faculty-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+@media (max-width: 500px) { .faculty-grid { grid-template-columns: 1fr; } }
+.fac-card {
+  border: 2px solid var(--border); border-radius: 12px; padding: 14px;
+  cursor: pointer; transition: all 0.15s; background: white;
+}
+.fac-card:hover { border-color: var(--ku-sky); }
+.fac-card.sel-a { border-color: var(--ku-crimson); background: rgba(14,122,78,0.05); }
+.fac-card.sel-b { border-color: var(--ku-blue); background: rgba(20,92,72,0.05); }
+.fac-card.sel-c { border-color: var(--ku-gold); background: rgba(200,150,12,0.06); }
+.fac-name { font-size: 13px; font-weight: 700; color: var(--text); }
+.fac-sub { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+.fac-fee { margin-top: 8px; font-size: 13px; font-weight: 800; }
+.fac-fee.a { color: var(--ku-crimson); }
+.fac-fee.b { color: var(--ku-blue); }
+.fac-fee.c { color: var(--ku-gold); }
+
+/* ─── INFO BOX ─── */
+.info-box { background: rgba(14,122,78,0.04); border: 1px solid rgba(14,122,78,0.12); border-radius: var(--radius-sm); padding: 12px 14px; font-size: 12px; color: var(--text-2); line-height: 1.75; }
+.info-box.warn { background: rgba(200,150,12,0.06); border-color: rgba(200,150,12,0.25); }
+/* 工事現場のトラテープ風の警告枠。中は白地、強調したい語だけ赤で見せる */
+.hazard-box {
+  background: #fff; padding: 12px 15px; border-radius: 0;
+  border: 7px solid;
+  border-image: repeating-linear-gradient(45deg,#FFC400 0 14px,#181818 14px 28px) 14;
+  font-size: 12px; line-height: 1.75; color: var(--text-1);
+}
+.hazard-box .hz-title { display: block; font-weight: 900; color: #C0392B; margin-bottom: 6px; font-size: 13px; }
+.bt-lines { display: flex; flex-direction: column; gap: 5px; }
+.bt-line { font-size: 12.5px; line-height: 1.5; }
+.bt-check { display: inline-block; width: 2.2em; font-weight: 800; }
+.bt-over { color: #C0392B; }
+.bt-parent-note { margin-top: 8px; padding: 7px 9px; background: rgba(240,165,0,0.08); border-left: 3px solid #c25e00; font-size: 12px; line-height: 1.6; }
+.hazard-box .hz-em { color: #C0392B; font-weight: 800; }
+.hazard-box ul { margin: 0; padding-left: 1.2em; }
+.hazard-box li { margin-bottom: 7px; }
+.hazard-box li:last-child { margin-bottom: 0; }
+.hazard-box .hz-foot { margin-top: 9px; padding-top: 8px; border-top: 1px dashed #ccc; font-size: 11px; color: var(--text-2); }
+.info-box.green { background: rgba(13,155,106,0.05); border-color: rgba(13,155,106,0.2); }
+.info-box.blue { background: rgba(20,92,72,0.04); border-color: rgba(20,92,72,0.12); }
+
+/* ─── EARNER BLOCK ─── */
+.earner-block { border: 1.5px solid var(--border); border-radius: 12px; padding: 18px; margin-bottom: 14px; }
+.earner-block:last-child { margin-bottom: 0; }
+.earner-label { font-size: 12px; font-weight: 700; color: var(--text-2); margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; }
+.earner-tag { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+.earner-tag.e1 { background: rgba(14,122,78,0.1); color: var(--ku-crimson); }
+.earner-tag.e2 { background: rgba(200,150,12,0.1); color: #8a6500; }
+.form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 500px) { .form-grid-2 { grid-template-columns: 1fr; } }
+.full { grid-column: 1 / -1; }
+
+/* ─── CHECKBOX ─── */
+.chk-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); cursor: pointer; transition: all 0.15s; }
+.chk-item:hover { border-color: var(--ku-sky); }
+.chk-item.on { border-color: var(--ku-crimson); background: rgba(14,122,78,0.05); }
+.chk-item.disabled { background: #f4f8f5; border-color: #d8e7dd; cursor: not-allowed; opacity: 0.72; }
+.chk-box { width: 20px; height: 20px; border: 2px solid var(--border); border-radius: 5px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; transition: all 0.15s; }
+.chk-item.on .chk-box { background: var(--ku-crimson); border-color: var(--ku-crimson); color: white; }
+.chk-item.disabled .chk-box { background: #e4efe7; border-color: #cbdccf; color: transparent; }
+.chk-item.disabled.on .chk-box { background: var(--ku-crimson); border-color: var(--ku-crimson); color: white; }
+.chk-text { font-size: 13px; font-weight: 500; }
+.chk-sub { font-size: 11px; color: var(--text-3); }
+
+/* ─── BUTTONS ─── */
+.btn-row { display: flex; gap: 10px; margin-top: 24px; justify-content: flex-end; }
+.btn { padding: 12px 24px; border-radius: 9px; border: none; cursor: pointer; font-size: 14px; font-family: inherit; font-weight: 700; transition: all 0.16s; letter-spacing: 0.02em; }
+.btn-primary { background: linear-gradient(135deg, var(--ku-navy), var(--ku-crimson)); color: white; box-shadow: 0 4px 14px rgba(14,122,78,0.3); }
+.btn-primary:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(14,122,78,0.4); }
+.btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+.btn-secondary { background: white; border: 1.5px solid var(--border); color: var(--text-2); }
+.btn-secondary:hover { border-color: var(--ku-crimson); color: var(--ku-crimson); }
+.btn-crimson { background: linear-gradient(135deg, var(--ku-crimson), #0a6b44); color: white; box-shadow: 0 4px 14px rgba(14,122,78,0.3); width: 100%; padding: 16px; font-size: 15px; margin-top: 14px; }
+.btn-crimson:hover { transform: translateY(-1px); }
+.btn-ghost { display: block; width: 100%; padding: 13px; margin-top: 10px; background: white; border: 1.5px solid var(--border); border-radius: 9px; cursor: pointer; font-size: 13px; font-family: inherit; font-weight: 600; color: var(--text-2); transition: all 0.15s; }
+.btn-ghost:hover { border-color: var(--ku-crimson); color: var(--ku-crimson); }
+
+/* ─── TUITION DISPLAY ─── */
+.tuition-display {
+  background: linear-gradient(135deg, var(--ku-navy) 0%, #0d4534 100%);
+  border-radius: var(--radius); padding: 24px; color: white; margin-bottom: 14px; position: relative; overflow: hidden;
+}
+.tuition-display::after {
+  content: 'MU'; position: absolute; right: 16px; top: -8px;
+  font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 110px;
+  opacity: 0.04; color: var(--ku-crimson); line-height: 1; pointer-events: none;
+}
+.td-fac-name { font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.85); margin-bottom: 16px; }
+.td-fee-grid { display: flex; gap: 0; justify-content: space-around; }
+.td-fee-item { flex: 1; text-align: center; padding: 0 12px; border-right: 1px solid rgba(255,255,255,0.1); }
+.td-fee-item:last-child { border-right: none; }
+.td-fee-label { font-size: 10px; color: rgba(255,255,255,0.5); margin-bottom: 6px; letter-spacing: 0.04em; }
+.td-fee-val { font-family: 'Montserrat', sans-serif; font-size: clamp(22px, 5vw, 34px); font-weight: 800; color: #7FE0AE; line-height: 1; }
+.td-fee-val small { font-size: 13px; font-family: 'Noto Sans JP', sans-serif; font-weight: 700; margin-left: 2px; }
+.td-note { font-size: 10px; color: rgba(255,255,255,0.35); text-align: center; margin-top: 14px; }
+.td-total-row {
+  display: flex; align-items: baseline; justify-content: center; gap: 10px;
+  margin-top: 18px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.12);
+}
+.td-total-label { font-size: 12px; color: rgba(255,255,255,0.6); letter-spacing: 0.04em; }
+.td-total-val { font-family: 'Montserrat', sans-serif; font-size: clamp(26px, 6vw, 40px); font-weight: 800; color: #7FE0AE; line-height: 1; }
+.td-total-val small { font-size: 14px; font-family: 'Noto Sans JP', sans-serif; font-weight: 700; margin-left: 2px; }
+
+/* ─── COLLAPSIBLE FEE DETAIL ─── */
+.fee-detail { padding: 0; }
+.fee-detail > .fee-table-wrap, .fee-detail > .yr-table-wrap { padding: 0 22px; }
+.fee-detail > .info-box { margin: 12px 22px 0; }
+.fee-detail > *:last-child:not(.fee-detail-summary) { margin-bottom: 22px; padding-bottom: 0; }
+.fee-detail-summary {
+  cursor: pointer; list-style: none; padding: 22px; margin-bottom: 0;
+  justify-content: space-between; user-select: none;
+}
+.fee-detail-summary::-webkit-details-marker { display: none; }
+.fee-detail-caret { font-size: 11px; color: var(--text-3); font-weight: 600; text-transform: none; letter-spacing: 0; }
+.fee-detail:not([open]) .fee-detail-caret::before { content: '開く ▾'; }
+.fee-detail[open] .fee-detail-caret::before { content: '閉じる ▴'; }
+.fee-detail[open] .fee-detail-summary { margin-bottom: 4px; }
+
+/* ─── YEAR TABLE ─── */
+.fee-table-wrap { overflow-x: auto; margin-top: 14px; }
+.fee-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.fee-table th { background: var(--bg); padding: 9px 12px; text-align: center; font-size: 11px; font-weight: 700; color: var(--text-2); border-bottom: 1px solid var(--border); white-space: nowrap; }
+.fee-table td { padding: 10px 12px; border-bottom: 1px solid rgba(216,231,221,0.5); text-align: center; vertical-align: middle; }
+.fee-table tr:last-child td { border-bottom: none; font-weight: 800; background: rgba(14,122,78,0.03); }
+.fee-table td:first-child { text-align: left; font-weight: 600; color: var(--text-2); }
+.no-support-col { color: var(--text-3); }
+.amt-strong { font-weight: 800; font-size: 15px; }
+
+/* ─── RESULT HERO ─── */
+.result-hero {
+  background: linear-gradient(135deg, #0a3a2a, #0d4534);
+  border-radius: var(--radius); padding: 28px 24px; color: white; margin-bottom: 14px; position: relative; overflow: hidden;
+}
+/* 結果画面のON/OFFトグルチップ */
+.res-toggle-card { display: flex; gap: 10px; flex-wrap: wrap; }
+.res-toggle {
+  flex: 1 1 180px; display: flex; align-items: center; gap: 12px; cursor: pointer;
+  border: 2px solid var(--border); border-radius: 12px; padding: 14px 16px; transition: all 0.16s;
+  background: var(--bg); user-select: none;
+}
+.res-toggle:hover { border-color: var(--ku-sky); }
+.res-toggle.on { border-color: var(--ku-green); background: rgba(13,155,106,0.06); }
+.res-toggle .rt-switch {
+  flex-shrink: 0; width: 46px; height: 26px; border-radius: 999px; background: #c4cdd6; position: relative; transition: background 0.16s;
+}
+.res-toggle.on .rt-switch { background: var(--ku-green); }
+.res-toggle .rt-switch::after {
+  content: ''; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%;
+  background: white; transition: transform 0.16s; box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+.res-toggle.on .rt-switch::after { transform: translateX(20px); }
+.rt-text { line-height: 1.35; }
+.rt-name { font-size: 14px; font-weight: 800; color: var(--text-1); }
+.rt-state { font-size: 11px; font-weight: 700; }
+.res-toggle.on .rt-state { color: var(--ku-green); }
+.res-toggle:not(.on) .rt-state { color: var(--text-3); }
+.result-hero::before {
+  content: 'MU'; position: absolute; right: 12px; top: -8px;
+  font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 90px; opacity: 0.05; color: #7FE0AE; line-height: 1;
+}
+.rh-eyebrow { font-size: 10px; letter-spacing: 2px; color: rgba(255,255,255,0.45); text-transform: uppercase; margin-bottom: 10px; }
+.rh-fac { font-size: 14px; font-weight: 700; color: rgba(255,255,255,0.85); margin-bottom: 4px; }
+.rh-zone { display: inline-block; padding: 4px 16px; border-radius: 999px; font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 800; border: 1.5px solid currentColor; margin: 10px 0; }
+.rh-cols { display: flex; gap: 0; justify-content: center; flex-wrap: wrap; margin-top: 14px; }
+.rh-col { text-align: center; padding: 0 20px; }
+.rh-col + .rh-col { border-left: 1px solid rgba(255,255,255,0.12); }
+.rh-col-label { font-size: 10px; color: rgba(255,255,255,0.45); margin-bottom: 3px; }
+.rh-col-val { font-family: 'Montserrat', sans-serif; font-size: clamp(18px, 4vw, 24px); font-weight: 800; color: #7FE0AE; }
+
+/* ─── COMPARE PANEL ─── */
+.compare-panel { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+@media (max-width: 560px) { .compare-panel { grid-template-columns: 1fr; } }
+.cp-card { border-radius: var(--radius); border: 1.5px solid var(--border); overflow: hidden; }
+.cp-head { padding: 10px 14px; font-size: 11px; font-weight: 700; letter-spacing: 0.04em; display: flex; align-items: center; gap: 6px; }
+.cp-head.no-sup { background: #f4f8f5; color: var(--text-3); }
+.cp-head.with-sup { background: rgba(14,122,78,0.07); color: var(--ku-crimson); }
+.cp-head.with-full { background: rgba(13,155,106,0.08); color: var(--ku-green); }
+.cp-body { padding: 16px 14px; }
+.cp-row { display: flex; justify-content: space-between; align-items: baseline; padding: 5px 0; border-bottom: 1px dashed rgba(216,231,221,0.6); font-size: 12px; }
+.cp-row:last-child { border-bottom: none; font-weight: 800; font-size: 14px; margin-top: 4px; padding-top: 8px; }
+.cp-row-label { color: var(--text-2); }
+.cp-row-val { font-weight: 700; }
+.cp-saving { margin-top: 10px; padding: 8px 12px; border-radius: 6px; text-align: center; font-size: 13px; font-weight: 800; }
+.cp-saving.crimson { background: rgba(14,122,78,0.08); color: var(--ku-crimson); }
+.cp-saving.green { background: rgba(13,155,106,0.08); color: var(--ku-green); }
+
+/* ─── YEAR TABLE IN RESULT ─── */
+.yr-table-wrap { overflow-x: auto; }
+.yr-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.yr-table th { padding: 9px 10px; background: var(--bg); font-size: 11px; font-weight: 700; color: var(--text-2); border-bottom: 1px solid var(--border); text-align: right; }
+.yr-table th:first-child { text-align: center; }
+.yr-table td { padding: 9px 10px; border-bottom: 1px solid rgba(216,231,221,0.5); text-align: right; vertical-align: middle; }
+.yr-table td:first-child { text-align: center; font-weight: 600; color: var(--text-2); }
+.yr-table tr:last-child td { font-weight: 800; background: rgba(14,122,78,0.03); border-bottom: none; }
+.saving-cell { font-weight: 700; color: var(--ku-green); }
+
+/* プルダウンで選んだ金額を、月額・年額の両方で確かめられるようにする表示 */
+.sel-annual {
+  margin-top: 8px; padding: 8px 12px;
+  background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
+  font-size: 13px; font-weight: 600; color: var(--text-2);
+}
+.sel-annual:empty { display: none; }
+.sel-annual strong { color: var(--text); font-weight: 800; }
+
+/* ─── 年次別の負担額：スマートフォン用のカード表示 ─── */
+/* パソコン幅では従来どおり表（.yr-table-wrap）、640px以下ではカード（.yr-cards）に切り替える */
+.yr-cards { display: none; }
+.yr-card {
+  border: 1.5px solid var(--border); border-radius: 10px;
+  padding: 12px 14px; margin-bottom: 10px; background: #fff;
+}
+.yr-card:last-child { margin-bottom: 0; }
+.yr-card-head {
+  font-size: 13px; font-weight: 800; color: var(--ku-crimson);
+  padding-bottom: 8px; margin-bottom: 6px; border-bottom: 1px solid var(--border);
+}
+.yr-card-row {
+  display: flex; justify-content: space-between; align-items: baseline;
+  gap: 12px; padding: 5px 0; font-size: 13px;
+}
+.yr-card-row > span:first-child { color: var(--text-2); font-weight: 600; flex-shrink: 0; }
+.yr-card-row > span:last-child { font-weight: 700; text-align: right; white-space: nowrap; }
+.yr-card-row.is-emph > span:last-child { font-size: 14px; }
+.yr-card-row.is-final {
+  margin-top: 6px; padding-top: 9px; border-top: 1px dashed var(--border);
+}
+.yr-card-row.is-final > span:first-child { color: var(--text); font-weight: 700; }
+.yr-card-row.is-final > span:last-child { font-size: 15px; color: var(--ku-navy); font-weight: 800; }
+.yr-card-total { background: rgba(14,122,78,0.04); border-color: rgba(14,122,78,0.28); }
+@media (max-width: 640px) {
+  .yr-table-wrap { display: none; }
+  .yr-cards { display: block; }
+}
+
+/* ─── 結果画面の目次 ─── */
+.result-toc .toc-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.toc-link {
+  display: inline-block; padding: 8px 12px; border: 1.5px solid var(--border);
+  border-radius: 999px; font-size: 12px; font-weight: 600; color: var(--text-2);
+  text-decoration: none; background: var(--bg); transition: all 0.15s;
+}
+.toc-link:hover, .toc-link:active { border-color: var(--ku-crimson); color: var(--ku-crimson); }
+
+/* ─── 上へ戻る（画面右下に固定） ─── */
+.to-top {
+  position: fixed; right: 16px; bottom: 20px; z-index: 300;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  width: 52px; height: 52px; border-radius: 50%;
+  border: none; background: var(--ku-navy); color: #fff;
+  font-family: inherit; font-size: 10px; font-weight: 700; line-height: 1.2;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.28); cursor: pointer;
+  opacity: 0; visibility: hidden; transform: translateY(8px);
+  transition: opacity 0.2s, visibility 0.2s, transform 0.2s;
+}
+.to-top.show { opacity: 0.94; visibility: visible; transform: translateY(0); }
+.to-top .tt-arrow { font-size: 13px; line-height: 1; margin-bottom: 2px; }
+@media print { .to-top, .result-toc { display: none !important; } }
+
+/* ─── RADIO CARDS ─── */
+.r-cards { display: flex; flex-direction: column; gap: 8px; }
+.r-card { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); cursor: pointer; transition: all 0.15s; }
+.r-card:hover { border-color: var(--ku-sky); }
+.r-card.sel { border-color: var(--ku-crimson); background: rgba(14,122,78,0.05); }
+.r-dot { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--border); flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+.r-card.sel .r-dot { border-color: var(--ku-crimson); background: var(--ku-crimson); }
+.r-dot::after { content: ''; width: 7px; height: 7px; border-radius: 50%; background: white; opacity: 0; transition: opacity 0.15s; }
+.r-card.sel .r-dot::after { opacity: 1; }
+.r-card-text { font-size: 13px; font-weight: 600; }
+.r-card-sub { font-size: 11px; color: var(--text-3); }
+
+/* ─── PATTERN CHOICE ─── */
+.pattern-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 480px) { .pattern-grid { grid-template-columns: 1fr; } }
+.pat-card { border: 2px solid var(--border); border-radius: 12px; padding: 18px; cursor: pointer; transition: all 0.18s; text-align: center; }
+.pat-card:hover { border-color: var(--ku-sky); }
+.pat-card.sel-crimson { border-color: var(--ku-crimson); background: rgba(14,122,78,0.05); }
+.pat-card.sel-green { border-color: var(--ku-green); background: rgba(13,155,106,0.05); }
+.pat-card.pat-disabled { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
+.pat-icon { font-size: 28px; margin-bottom: 10px; }
+.pat-name { font-size: 14px; font-weight: 800; color: var(--text); margin-bottom: 5px; }
+.pat-card.sel-crimson .pat-name { color: var(--ku-crimson); }
+.pat-card.sel-green .pat-name { color: var(--ku-green); }
+.pat-desc { font-size: 11px; color: var(--text-3); line-height: 1.6; }
+.pat-badge { display: inline-block; margin-top: 10px; padding: 3px 10px; border-radius: 999px; font-size: 10px; font-weight: 700; }
+.pat-badge.crimson { background: rgba(14,122,78,0.1); color: var(--ku-crimson); }
+.pat-badge.green { background: rgba(13,155,106,0.1); color: var(--ku-green); }
+
+/* ─── TAIYO CARDS ─── */
+.taiyo-cards { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-top: 4px; }
+@media (max-width: 560px) { .taiyo-cards { grid-template-columns: 1fr; } }
+.taiyo-card { border: 2px solid var(--border); border-radius: 12px; padding: 16px 12px; text-align: center; }
+.tc-ok { border-color: var(--ku-green); background: rgba(13,155,106,0.05); }
+.tc-ng { border-color: var(--border); background: var(--bg); opacity: 0.75; }
+.tc-warn { border-color: var(--ku-red); background: rgba(192,57,43,0.06); }
+.tc-warn-yellow { border-color: rgba(240,165,0,0.5); background: rgba(240,165,0,0.07); }
+.tc-name { font-size: 12px; font-weight: 700; color: var(--text); margin-bottom: 10px; line-height: 1.4; }
+.tc-badge { font-size: 16px; font-weight: 900; padding: 6px 0; margin-bottom: 8px; }
+.tc-ok .tc-badge { color: var(--ku-green); }
+.tc-ng .tc-badge { color: var(--text-3); }
+.tc-warn .tc-badge { color: var(--ku-red); }
+.tc-warn-yellow .tc-badge { color: #b07800; }
+.tc-threshold { font-size: 10px; color: var(--text-3); }
+.tc-monthly { margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border); }
+.tc-monthly-label { font-size: 10px; font-weight: 700; color: var(--text-2); letter-spacing: 0.5px; margin-bottom: 4px; }
+.tc-monthly-range { font-size: 16px; font-weight: 900; color: var(--ku-crimson); line-height: 1.2; margin-bottom: 4px; }
+.tc-monthly-range.tc-monthly-warn { color: var(--ku-red); }
+.tc-monthly-divider { border-top: 1px dashed var(--border); margin: 10px 0 4px; }
+.tc-monthly-max-note { font-size: 9px; font-weight: 600; color: var(--text-3); display: block; margin-top: 2px; }
+.tc-monthly-others { font-size: 11px; color: var(--ku-crimson); font-weight: 600; margin-bottom: 4px; }
+.tc-monthly-note { font-size: 10px; color: var(--text-2); margin-top: 3px; line-height: 1.6; }
+
+/* ─── HEIKYU BOX ─── */
+.heikyu-box { background: linear-gradient(135deg,rgba(192,57,43,0.07),rgba(192,57,43,0.04)); border: 2px solid rgba(192,57,43,0.28); border-radius: 14px; padding: 18px 20px; margin-top: 16px; }
+.heikyu-box-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+.heikyu-alert { display: inline-block; padding: 5px 12px; border-radius: 999px; background: rgba(192,57,43,0.14); color: var(--ku-red); font-size: 11px; font-weight: 800; letter-spacing: 0.5px; }
+.heikyu-title { font-size: 16px; font-weight: 900; color: #a61d18; margin-top: 8px; }
+.heikyu-desc { font-size: 12px; color: #7a2a24; line-height: 1.8; margin-top: 8px; }
+.heikyu-value { font-size: clamp(26px,5vw,38px); line-height: 1.1; font-weight: 900; color: var(--ku-red); font-family: 'Montserrat', sans-serif; text-align: right; white-space: pre-line; }
+.heikyu-subnote { font-size: 11px; color: #7a2a24; line-height: 1.8; margin-top: 10px; }
+.heikyu-meta { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; margin-top: 14px; }
+@media (max-width: 560px) { .heikyu-meta { grid-template-columns: 1fr; } }
+.heikyu-meta-card { background: rgba(255,255,255,0.7); border: 1px solid rgba(192,57,43,0.15); border-radius: 10px; padding: 12px 14px; }
+.heikyu-meta-label { font-size: 10px; color: #99504c; font-weight: 700; letter-spacing: 0.5px; margin-bottom: 6px; }
+.heikyu-meta-value { font-size: 13px; color: #5a2a26; font-weight: 700; line-height: 1.7; }
+
+/* ─── FORMULA BOX ─── */
+.formula-box { background: #f8f2e8; border: 1px solid rgba(200,150,12,0.3); border-radius: 10px; padding: 14px 18px; margin-bottom: 16px; }
+.formula-title { font-size: 11px; font-weight: 700; color: #7a5500; margin-bottom: 8px; }
+.formula-expr { font-size: 13px; font-weight: 600; color: #4a3200; font-family: 'Courier New', monospace; background: rgba(255,255,255,0.7); padding: 8px 12px; border-radius: 6px; word-break: break-all; }
+.formula-note { font-size: 10px; color: #9a7030; margin-top: 6px; }
+.calc-row-formula { display: grid; grid-template-columns: minmax(110px,max-content) 1fr auto; gap: 8px; align-items: baseline; padding: 6px 0; border-bottom: 1px dashed rgba(206,226,213,0.5); font-size: 12px; }
+.calc-row-formula:last-child { border-bottom: none; }
+.cfr-label { font-weight: 600; color: var(--text-2); }
+.cfr-expr { color: var(--text-2); font-family: 'Courier New', monospace; font-size: 11px; }
+.cfr-result { font-weight: 700; color: var(--text); text-align: right; white-space: nowrap; }
+.calc-row-total .cfr-label, .calc-row-total .cfr-result { color: var(--ku-green); font-size: 13px; }
+.deduct-row .cfr-result { color: var(--ku-red); }
+
+/* ─── NOTICE BOX ─── */
+.notice-box { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px 16px; font-size: 11px; color: var(--text-2); line-height: 1.85; }
+.notice-box p + p { margin-top: 4px; }
+.notice-box a { color: var(--ku-crimson); }
+
+/* ─── TOAST ─── */
+.toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--ku-crimson); color: white; padding: 11px 22px; border-radius: 30px; font-size: 13px; font-weight: 700; box-shadow: 0 6px 24px rgba(14,122,78,0.35); z-index: 9999; transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1); white-space: nowrap; }
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+.auto-badge { display: inline-block; padding: 1px 7px; border-radius: 999px; font-size: 10px; font-weight: 700; background: rgba(14,122,78,0.08); color: var(--ku-crimson); margin-left: 6px; }
+
+/* ─── TAIYO STATUS BAR ─── */
+.taiyo-status-bar { display: flex; gap: 0; border: 1.5px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 14px; }
+.taiyo-status-seg { flex: 1; padding: 12px 8px; text-align: center; }
+.tss-divider { width: 1.5px; background: var(--border); flex-shrink: 0; }
+.tss-name { font-size: 10px; font-weight: 600; color: var(--text-2); margin-bottom: 6px; line-height: 1.4; }
+.tss-val { font-size: 13px; font-weight: 800; line-height: 1.3; }
+.tss-sub-detail { display: flex; flex-direction: column; gap: 3px; margin-top: 6px; }
+.tss-sub-warn { font-size: 10px; font-weight: 700; color: #b07800; background: rgba(240,165,0,0.15); border-radius: 4px; padding: 2px 6px; }
+.tss-sub-ok { font-size: 10px; font-weight: 700; color: var(--ku-green); background: rgba(13,155,106,0.15); border-radius: 4px; padding: 2px 6px; }
+.tss-warn-note { font-size: 11px; color: #b07800; background: rgba(240,165,0,0.08); border: 1px solid rgba(240,165,0,0.25); border-radius: 8px; padding: 8px 12px; margin-top: 12px; line-height: 1.7; }
+
+@media (max-width: 460px) {
+  .td-fee-grid { flex-wrap: wrap; }
+  .td-fee-item { flex: 1 1 45%; border-right: none; border-bottom: 1px solid rgba(255,255,255,0.1); padding: 10px 4px; }
+  .td-fee-item:nth-child(odd) { border-right: 1px solid rgba(255,255,255,0.13); }
+  .td-fee-item:last-child { border-bottom: none; flex: 1 1 100%; }
+}
+
+/* ─── SUPPORT BREAKDOWN ─── */
+.support-cards { display: flex; flex-direction: column; gap: 10px; }
+.sup-card {
+  border: 1.5px solid var(--border); border-radius: 12px; padding: 14px 16px;
+  display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;
+}
+.sup-card.active-blue { border-color: rgba(20,92,72,0.3); background: rgba(20,92,72,0.03); }
+.sup-card.active-green { border-color: rgba(13,155,106,0.3); background: rgba(13,155,106,0.03); }
+.sup-card.inactive { background: var(--bg); opacity: 0.7; }
+.sup-label-area { flex: 1; }
+.sup-title { font-size: 13px; font-weight: 700; }
+.sup-title.blue { color: var(--ku-navy); }
+.sup-title.green { color: var(--ku-green); }
+.sup-title.gray { color: var(--text-3); }
+.sup-meta { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+.sup-amounts { display: flex; gap: 16px; }
+.sup-amount-item { text-align: right; }
+.sup-amount-label { font-size: 10px; color: var(--text-3); }
+.sup-amount-val { font-size: 17px; font-weight: 800; }
+.sup-amount-val.blue { color: var(--ku-navy); }
+.sup-amount-val.green { color: var(--ku-green); }
+.sup-amount-val.gray { color: var(--text-3); }
+</style>
+</head>
+<body>
+
+<!-- ─── HEADER ─── -->
+<div class="site-header">
+  <div class="header-top">
+    <div class="ku-logo-area">
+      <div class="ku-emblem">MU</div>
+      <div class="ku-title-area">
+        <div class="ku-name">まなび大学</div>
+        <div class="ku-subtitle">進学費用シミュレーター 2026年度</div>
+      </div>
+    </div>
+  </div>
+  <div class="progress-strip">
+    <div class="steps-row">
+      <div class="s-tab active" id="tab-1" onclick="goStep(1,false)"><div class="s-num">1</div><div class="s-label">学部選択</div></div>
+      <div class="s-tab" id="tab-2" onclick="goStep(2,false)"><div class="s-num">2</div><div class="s-label">MU学費</div></div>
+      <div class="s-tab" id="tab-3" onclick="goStep(3,false)"><div class="s-num">3</div><div class="s-label">JASSO奨学金</div></div>
+      <div class="s-tab" id="tab-4" onclick="goStep(4,false)"><div class="s-num">4</div><div class="s-label">独自奨学金</div></div>
+      <div class="s-tab" id="tab-5" onclick="goStep(5,false)"><div class="s-num">5</div><div class="s-label">仕送り・生活費</div></div>
+      <div class="s-tab" id="tab-6" onclick="goStep(6,false)"><div class="s-num">6</div><div class="s-label">試算結果</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<main>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- ═══════════════════════════════════════════════ -->
+<!-- STEP 1: 学部選択 -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="section active" id="step-1">
+  <div class="step-header">
+    <div class="step-badge">STEP 1</div>
+    <div>
+      <div class="step-title">学部・学科の選択</div>
+      <div class="step-desc">進学を検討している学部・学科を選んでください（2026年度入学生対象）。</div>
+    </div>
+  </div>
+
+  <!-- 文系 -->
+  <div class="card">
+    <div class="card-title">文系学部</div>
+    <div class="faculty-grid">
+      <div class="fac-card" id="fc-law" onclick="selectFac('law')">
+        <div class="fac-name">法学部（法律学科）</div>
+        <div class="fac-fee a">初年度 126.5万円</div>
+      </div>
+      <div class="fac-card" id="fc-econ" onclick="selectFac('econ')">
+        <div class="fac-name">経済学部（経済学科）</div>
+        <div class="fac-fee a">初年度 121.5万円</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 情報学部（専攻選択） -->
+  <div class="card">
+    <div class="card-title">情報学部（専攻選択）</div>
+    <div class="faculty-grid">
+      <div class="fac-card" id="fc-info_design" onclick="selectFac('info_design')">
+        <div class="fac-name">情報学部（情報デザイン専攻）</div>
+        <div class="fac-fee b">初年度 156.0万円</div>
+      </div>
+      <div class="fac-card" id="fc-info_media" onclick="selectFac('info_media')">
+        <div class="fac-name">情報学部（メディア情報専攻）</div>
+        <div class="fac-fee b">初年度 171.0万円</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 薬学部・保健医療学部 -->
+  <div class="card">
+    <div class="card-title">薬学部・保健医療学部</div>
+    <div class="faculty-grid">
+      <div class="fac-card" id="fc-pharm" onclick="selectFac('pharm')">
+        <div class="fac-name">薬学部（薬学科）</div>
+        <div class="fac-fee c">初年度 217.0万円</div>
+      </div>
+      <div class="fac-card" id="fc-med" onclick="selectFac('med')">
+        <div class="fac-name">保健医療学部（医学科）</div>
+        <div class="fac-fee c">初年度 590.0万円</div>
+      </div>
+      <div class="fac-card" id="fc-nursing" onclick="selectFac('nursing')">
+        <div class="fac-name">保健医療学部（看護学科）</div>
+        <div class="fac-fee a">初年度 153.3万円</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="err-fac" style="display:none;font-size:12px;color:var(--ku-red);font-weight:700;padding:10px;background:rgba(192,57,43,0.06);border-radius:8px;margin-bottom:14px">⚠ 学部・学科を選択してください</div>
+
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="goFacultyNext()">次へ：まなび大学の学費を確認 →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- STEP 2: MU学費 -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="section" id="step-2">
+  <div class="step-header">
+    <div class="step-badge">STEP 2</div>
+    <div>
+      <div class="step-title">まなび大学の学費確認</div>
+      <div class="step-desc">選択した学部の学費・諸費の内訳を確認してください。</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">在学状況</div>
+    <div class="toggle-row">
+      <button class="tog-btn sel" id="eg-new" onclick="setEnrollType('new',this)">新入学生（1年次から）</button>
+      <button class="tog-btn" id="eg-current" onclick="setEnrollType('current',this)">在学中（現在の学年を選択）</button>
+    </div>
+    <div id="grade-picker" style="display:none;margin-top:12px">
+      <div class="toggle-row" id="grade-picker-row"></div>
+    </div>
+    <div id="grade-note"></div>
+  </div>
+
+  <div id="tuition-info-block"></div>
+
+  <div class="btn-row">
+    <button class="btn btn-secondary" onclick="goStep(1,true)">← 戻る</button>
+    <button class="btn btn-primary" onclick="goTuitionNext()">次へ：JASSO奨学金の入力 →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- STEP 3: JASSO奨学金の入力（区分判定ソフトの結果） -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="section" id="step-3">
+  <div class="step-header">
+    <div class="step-badge">STEP 3</div>
+    <div>
+      <div class="step-title">JASSO奨学金の入力</div>
+      <div class="step-desc">区分判定ソフトで確認した採用区分と、利用するJASSO奨学金の内容を選択してください。</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">通学形態</div>
+    <div class="toggle-row">
+      <button class="tog-btn sel" id="cm-jitaku" onclick="setCommute('jitaku',this)">自宅通学</button>
+      <button class="tog-btn" id="cm-jitakugai" onclick="setCommute('jitakugai',this)">自宅外通学</button>
+    </div>
+    <div class="info-box" style="margin-top:10px">
+      通学形態によって<strong>給付型奨学金の月額</strong>と<strong>第一種奨学金の最高月額</strong>が変わります。
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">多子世帯の認定</div>
+    <div class="toggle-row">
+      <button class="tog-btn sel" id="tashi-no" onclick="setTashi(false,this)">多子世帯ではない</button>
+      <button class="tog-btn" id="tashi-yes" onclick="setTashi(true,this)">多子世帯（子3人以上を扶養）</button>
+    </div>
+    <div class="info-box" style="margin-top:10px">
+      生計維持者が扶養する子どもが3人以上いる「多子世帯」は、令和7年度から<strong>所得制限なく授業料等減免（満額）</strong>が受けられます。給付型奨学金は所得区分（第Ⅰ〜Ⅳ区分）に応じて支給され、区分を超える所得の場合は0円となります。
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">給付型奨学金の区分</div>
+    <div class="toggle-row">
+      <button class="tog-btn" id="kz-I"    onclick="setKyufuZone('I',this)">第Ⅰ区分</button>
+      <button class="tog-btn" id="kz-II"   onclick="setKyufuZone('II',this)">第Ⅱ区分</button>
+      <button class="tog-btn" id="kz-III"  onclick="setKyufuZone('III',this)">第Ⅲ区分</button>
+      <button class="tog-btn" id="kz-IV" disabled title="「多子世帯」を選択すると選べるようになります" onclick="setKyufuZone('IV',this)">第Ⅳ区分</button>
+      <button class="tog-btn" id="kz-none" onclick="setKyufuZone('none',this)">対象外</button>
+    </div>
+    <div id="kyufu-preview"></div>
+    <div class="err-msg" id="err-kz">給付型奨学金の区分を選択してください（対象外の場合も選択が必要です）</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">授業料等減免の区分</div>
+    <div id="genmen-zone-picker">
+      <div class="toggle-row">
+        <button class="tog-btn" id="gz-I"    onclick="setGenmenZone('I',this)">第Ⅰ区分</button>
+        <button class="tog-btn" id="gz-II"   onclick="setGenmenZone('II',this)">第Ⅱ区分</button>
+        <button class="tog-btn" id="gz-III"  onclick="setGenmenZone('III',this)">第Ⅲ区分</button>
+        <button class="tog-btn" id="gz-IV" title="私立理工農系の学部を選択している場合のみ選べます" onclick="setGenmenZone('IV',this)">第Ⅳ区分（理工農系）</button>
+        <button class="tog-btn" id="gz-none" onclick="setGenmenZone('none',this)">対象外</button>
+      </div>
+      <div id="genmen-preview"></div>
+      <div class="err-msg" id="err-gz">授業料等減免の区分を選択してください（対象外の場合も選択が必要です）</div>
+    </div>
+    <div id="genmen-tashi-note" style="display:none"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">貸与型奨学金（区分判定ソフトの結果）</div>
+    <div class="toggle-row">
+      <button class="tog-btn" id="te-heiyo"  onclick="setTaiyoElig('heiyo',this)">併用基準</button>
+      <button class="tog-btn" id="te-ichini" onclick="setTaiyoElig('ichini',this)">第一種・第二種（併用は不可）</button>
+      <button class="tog-btn" id="te-ni"     onclick="setTaiyoElig('ni',this)">第二種のみ</button>
+      <button class="tog-btn" id="te-none"   onclick="setTaiyoElig('none',this)">対象外</button>
+    </div>
+    <div id="taiyo-preview"></div>
+    <div class="err-msg" id="err-te">貸与型奨学金の判定結果を選択してください（対象外の場合も選択が必要です）</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">特例区分</div>
+    <div class="toggle-row">
+      <button class="tog-btn sel" id="ss-no"  onclick="setSpecialSupport(false,this)">該当なし</button>
+      <button class="tog-btn"     id="ss-yes" onclick="setSpecialSupport(true,this)">生活保護世帯同居 / 児童養護施設等</button>
+    </div>
+    <div class="info-box" style="margin-top:10px">
+      生活保護（扶助の種類を問いません）を受けている生計維持者と同居している人、または社会的養護を必要とする人で児童養護施設等から通学する人（自宅通学扱い）は、第一種の併給調整後の月額が<strong>通常より高い特例額</strong>になる場合があります。区分判定ソフトで該当を確認のうえ選択してください。
+    </div>
+  </div>
+
+
+  <div class="btn-row">
+    <button class="btn btn-secondary" onclick="goStep(2,true)">← 戻る</button>
+    <button class="btn btn-primary" onclick="goSupportNext()">次へ：学校独自の奨学金 →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- STEP 4: 学校独自の奨学金 -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="section" id="step-4-uni">
+  <div class="step-header">
+    <div class="step-badge">STEP 4</div>
+    <div>
+      <div class="step-title">学校独自の奨学金</div>
+      <div class="step-desc">まなび大学が独自に設けている奨学金・特待生制度を利用する場合は入力してください。</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">まなび大学 独自の奨学金</div>
+    <div class="toggle-row">
+      <button class="tog-btn sel" id="us-uni-no" onclick="setUniOn(false,this)">利用しない</button>
+      <button class="tog-btn" id="us-uni-yes" onclick="setUniOn(true,this)">利用する</button>
+    </div>
+    <div id="uni-option-block" style="display:none;margin-top:14px">
+      <div class="pattern-grid" id="uni-option-grid">
+        <div class="pat-card" id="uni-opt-A" onclick="selectUniOption('A')">
+          <div class="pat-icon" style="font-weight:900;color:var(--ku-navy)">Ａ</div>
+          <div class="pat-name">給付奨学金Ａ</div>
+          <div class="pat-desc">条件なし<br>年間30万円・在学全期間</div>
+        </div>
+        <div class="pat-card" id="uni-opt-B" onclick="selectUniOption('B')">
+          <div class="pat-icon" style="font-weight:900;color:var(--ku-navy)">Ｂ</div>
+          <div class="pat-name">給付奨学金Ｂ</div>
+          <div class="pat-desc">JASSOの授業料等減免が優先（減免された分だけ給付額が減ります）<br>年間50万円を上限・授業料に充当</div>
+        </div>
+        <div class="pat-card" id="uni-opt-C" onclick="selectUniOption('C')">
+          <div class="pat-icon" style="font-weight:900;color:var(--ku-navy)">Ｃ</div>
+          <div class="pat-name">給付奨学金Ｃ</div>
+          <div class="pat-desc">初年度のみJASSOの授業料等減免と併用不可（2年次以降は通常どおり減免を受けられます）<br>70万円・初年度のみ</div>
+        </div>
+        <div class="pat-card" id="uni-opt-D" onclick="selectUniOption('D')">
+          <div class="pat-icon" style="font-weight:900;color:var(--ku-navy)">Ｄ</div>
+          <div class="pat-name">地方出身者向け</div>
+          <div class="pat-desc">出身地が1都3県以外の方が対象<br>年間50万円・在学全期間</div>
+        </div>
+        <div class="pat-card" id="uni-opt-E" onclick="selectUniOption('E')" style="display:none">
+          <div class="pat-icon" style="font-weight:900;color:var(--ku-navy)">Ｅ</div>
+          <div class="pat-name">医学生限定特待生制度</div>
+          <div class="pat-desc">保健医療学部（医学科）限定<br>国立大学の学費相当まで減免<br>選択するとSTEP3のJASSO授業料等減免は自動的に対象外になります</div>
+        </div>
+      </div>
+      <div id="uni-disabled-note"></div>
+      <div id="uni-e-note"></div>
+      <div class="err-msg" id="err-uni">独自奨学金の種類を選択してください</div>
+    </div>
+    <div class="info-box" style="margin-top:14px">大学独自の奨学金は<strong>返還不要の給付</strong>として学費から差し引いて計算します。給付奨学金Ａ・Ｄは、JASSOの授業料等減免と併用できます。給付奨学金Ｂは<strong>JASSOの授業料等減免が優先</strong>され、年間50万円の枠から減免額を差し引いた残りが授業料に充当されます（例：授業料等減免が233,400円なら独自奨学金は266,600円。授業料が全額減免される場合は利用できません）。給付奨学金Ｃは<strong>初年度のみ</strong>JASSOの<strong>授業料等減免</strong>と併用できません（初年度の減免は0円扱いになります）が、<strong>2年次以降は</strong>STEP3で選んだ授業料等減免を通常どおり受けられます。給付型奨学金はＣと併用でき、<strong>初年度から</strong>区分どおり受けられます。医学生限定特待生制度は<strong>在学期間中ずっと</strong>JASSOの授業料等減免と併用できないため、選択すると自動的にSTEP3側の授業料等減免が「対象外」に切り替わります（給付型奨学金は区分どおり利用できます）。医学生限定特待生制度は、保健医療学部（医学科）を選択した場合のみ表示されます。</div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-secondary" onclick="goStep(3,true)">← 戻る</button>
+    <button class="btn btn-primary" onclick="goS4Next()">次へ：仕送り・アルバイト・生活費の入力 →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- STEP 5: 仕送り・アルバイト -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="section" id="step-5-income">
+  <div class="step-header">
+    <div class="step-badge">STEP 5</div>
+    <div>
+      <div class="step-title">仕送り・アルバイト・生活費の入力</div>
+      <div class="step-desc">家庭からの仕送りや学生本人のアルバイト収入を入力してください。学費とは別にかかる生活費も、必要に応じて含めることができます（既定は「含めない」）。</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">仕送り（家庭から出す金額）</div>
+    <div class="toggle-row">
+      <button class="tog-btn sel" id="sk-no" onclick="setShiokuri(false,this)">利用しない</button>
+      <button class="tog-btn" id="sk-yes" onclick="setShiokuri(true,this)">利用する</button>
+    </div>
+    <div id="sk-block" style="display:none;margin-top:12px">
+      <div class="fg">
+        <label>仕送り月額<span class="hint">1万円単位で選んでください</span></label>
+        <select id="sk-amount" onchange="onShiokuriChange()"></select>
+      </div>
+      <div class="sel-annual" id="sk-annual"></div>
+      <div class="fg" id="sk-custom-wrap" style="display:none">
+        <label>金額を直接入力<span class="hint">1円単位で入力できます</span></label>
+        <div class="input-wrap">
+          <input type="text" inputmode="numeric" class="num-input" id="sk-custom" placeholder="例：85000" oninput="onShiokuriCustomInput()">
+          <span class="input-unit">円/月</span>
+        </div>
+      </div>
+      <div class="info-box" style="margin-top:10px"><strong>生活費として送る分が中心ですが、生活費で使い切らなかった分は学費にも充てて計算します。</strong>「学費と生活費をまかなうために、ご家庭から毎月いくら出す想定か」という金額を選んでください。<br>なお医学部・歯学部など6年制の学部で自宅外通学の場合は、家賃・生活費の負担が大きくなるため、月15万〜20万円以上になることもあります。</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">アルバイト（学生本人の収入）</div>
+    <div class="toggle-row">
+      <button class="tog-btn sel" id="bt-no" onclick="setBaito(false,this)">利用しない</button>
+      <button class="tog-btn" id="bt-yes" onclick="setBaito(true,this)">利用する</button>
+    </div>
+    <div id="bt-block" style="display:none;margin-top:12px">
+      <div class="fg">
+        <label>アルバイト月額（額面目安）<span class="hint">1万円単位で選んでください</span></label>
+        <select id="bt-amount" onchange="onBaitoInput()"></select>
+      </div>
+      <div class="fg" id="bt-custom-wrap" style="display:none">
+        <label>金額を直接入力<span class="hint">1円単位で入力できます</span></label>
+        <div class="input-wrap">
+          <input type="text" inputmode="numeric" class="num-input" id="bt-custom" placeholder="例：45000" oninput="onBaitoCustomInput()">
+          <span class="input-unit">円/月</span>
+        </div>
+      </div>
+      <div id="bt-warn"></div>
+    </div>
+  </div>
+
+  <div class="info-box" style="margin-top:4px">
+    ここで入力した金額は、結果画面の「差引 自己資金」から差し引いて再計算します。医学部など学業が忙しい学部ではアルバイトが難しい場合もあるため、あくまで目安として入力してください。この項目はいつでも「利用しない」に戻すことができ、その場合は結果画面の計算から自動的に除外されます。
+  </div>
+
+  <div class="card">
+    <div class="card-title">生活費の目安（任意）</div>
+    <div class="toggle-row">
+      <button class="tog-btn" id="lv-yes" onclick="setLivingOn(true,this)">含める</button>
+      <button class="tog-btn sel" id="lv-no" onclick="setLivingOn(false,this)">含めない</button>
+    </div>
+    <div id="lv-block" style="display:none;margin-top:12px">
+      <div class="fg">
+        <label>生活費（月額）</label>
+        <div class="input-wrap">
+          <input type="text" inputmode="numeric" class="num-input" id="lv-amount" value="0" oninput="onLivingInput()">
+          <span class="input-unit">円/月</span>
+        </div>
+      </div>
+    </div>
+    <div class="info-box" style="margin-top:10px">既定では<strong>「含めない」</strong>（学費のみの試算）です。「含める」を選ぶと、JASSO「学生生活調査」の平均額をもとに、STEP3で選んだ通学形態（自宅／自宅外）に応じて自宅は月3.5万円、自宅外は月10万円を自動で入れます。実際の生活スタイルに合わせて金額を調整してください。ここで入力した金額は、結果画面の実質負担に上乗せし、<strong>年次別グラフの左の棒（学費）の上にも積み上げて</strong>表示します。</div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-secondary" onclick="goStep(4,true)">← 戻る</button>
+    <button class="btn btn-primary" onclick="goStep(6,true)">試算結果を見る →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- STEP 6: 試算結果 -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="section" id="step-6">
+  <div class="step-header">
+    <div class="step-badge">STEP 6</div>
+    <div>
+      <div class="step-title">MU 進学費用シミュレーション 結果</div>
+      <div class="step-desc">給付型奨学金・貸与型奨学金のON/OFFを切り替えて試算できます。</div>
+    </div>
+  </div>
+
+  <div id="result-root"></div>
+
+  <div style="margin-top:20px;display:flex;flex-direction:column;gap:8px">
+    <button class="btn-ghost" onclick="goStep(3,true)">← JASSO奨学金の入力へ戻る</button>
+    <button class="btn-ghost" onclick="goStep(4,true)">← 学校独自の奨学金へ戻る</button>
+    <button class="btn-ghost" onclick="goStep(5,true)">← 仕送り・アルバイト・生活費の入力へ戻る</button>
+    <button class="btn-ghost" onclick="goStep(1,true)">← 最初から再試算する</button>
+  </div>
+</div>
+
+</main>
+
+<!-- 上へ戻る（スクロール量が一定を超えたときだけ表示される） -->
+<button id="to-top" class="to-top" onclick="scrollToTop()" aria-label="ページの先頭へ戻る">
+  <span class="tt-arrow">▲</span>上へ
+</button>
+
+<!-- ═══════════════ SCRIPT ═══════════════ -->
+<script>
+'use strict';
+
+// ─── STATE ───
+// 給付奨学金をSTEP6でON/OFF切り替え可能にするかの設定フラグ。
+// false＝チェックを廃止し、給付奨学金を最初から常に反映（現在の仕様）。
+// 将来また分けたくなった場合は true に戻すと、STEP6にON/OFFトグルが復活する
+// （ST.useKyufuの初期値もfalseに戻すこと）。
+const SHOW_KYUFU_TOGGLE = false;
+
+// STEP6の「試算に含める支援」カード（給付奨学金・貸与奨学金の両スイッチ）を
+// 表示するかどうかの設定フラグ。false＝カードごと非表示（現在の仕様）。
+// 将来また見せたくなった場合は true に戻すだけで復元できる。
+const SHOW_SUPPORT_TOGGLE_CARD = false;
+
+// 貸与型奨学金の「金額」を試算・グラフに反映するかどうかの設定フラグ。
+// true＝STEP6の「利用できる貸与型奨学金」カードで、実際に借りる希望額（第一種・第二種の月額／
+//       一時金）を選択でき、その金額が年次別グラフ・差引自己資金・年次別テーブルに反映される。
+// 貸与型奨学金の「金額」を試算・グラフに反映するかどうかの設定フラグ。
+// false＝STEP6の「利用できる貸与型奨学金」カードでは利用できる月額の範囲を案内するだけで、
+//        実際にいくら借りるかはご本人が判断するものとし、試算・年次別テーブル・グラフには含めない。
+const REFLECT_TAIYO_IN_CALC = true;
+
+const ST = {
+  faculty: null,
+  commute: 'jitaku',
+  tashi: false,          // 多子世帯（子3人以上を扶養）かどうか
+  kyufuZone: null,      // 'I'|'II'|'III'|'IV'|'none'
+  genmenZone: null,     // 'I'|'II'|'III'|'IV'|'none'（多子世帯の場合はtashiフラグで満額を別途適用）
+  taiyoElig: null,       // 貸与型の判定結果 'heiyo'（併用基準）|'ichini'（第一種・第二種／併用不可）|'ni'（第二種のみ）|'none'（対象外）
+  specialSupport: false, // 特例区分：生活保護世帯同居／児童養護施設等から自宅通学（第一種の併給調整に特例額が適用される場合がある）
+  ichijikinPlanAmt: 0,   // STEP6で選んだ一時金の希望額（0＝利用しない）
+  t1PlanM: 0,            // STEP6で選んだ第一種の希望月額（0＝利用しない）
+  t2PlanM: 0,            // STEP6で選んだ第二種の希望月額（0＝利用しない）
+  uniChoice: 'none',     // 'none'|'A'|'B'|'C'|'D'|'E' — 既定は「利用しない」
+  livingOn: false,       // 生活費の目安を試算に含めるか（既定はOFF＝学費のみ。STEP5で「含める」を選ぶと自宅／自宅外に応じた目安額を自動設定）
+  livingM: 0,          // 生活費の月額（STEP5で自宅／自宅外に応じて自動初期化、編集可。初期値は自宅通学の目安）
+  livingCustomized: false, // ユーザーが生活費の月額を手動編集したか（trueなら通学形態が変わっても自動上書きしない）
+  compareIncludeLiving: false, // STEP6の比較パネルに生活費を含めて表示するか（既定は学費のみ）
+  shiokuriOn: false,
+  shiokuriM: 0,
+  baitoOn: false,
+  baitoM: 0,
+  useKyufu: true,        // 結果画面：給付奨学金を反映するか（SHOW_KYUFU_TOGGLE=falseの間は常にtrueで固定）
+  useTaiyo: false,       // 結果画面：貸与奨学金・一時金を反映するか（初期OFF）
+  currentGrade: null     // null=新入学生（1年次から）／2以上=在学中（その学年から卒業まで）
+};
+
+// ─── MU DATA（SE引渡用シート v7①「2026年度_学校データ入力シート_SE引渡用_まなび大学」より） ───
+// 各フィールド:
+//   years: 修業年限（4年制 / 6年制）
+//   admissionFee: 入学金（1年次のみ）
+//   tuitionY: 年次別授業料の配列（years分）
+//   fees: 授業料以外の諸費（label と年次別金額 y の配列）
+//   stem: 理系フラグ（第Ⅳ区分減免対象＝私立理工農系）
+//   medical: 医療系の課程区分。'med'＝医・歯学課程（第二種の増額月額16万円）
+//            'pharm'＝薬・獣医学課程（同14万円）。未設定なら増額なし
+// ※ 学部・学科・専攻の構成は、久米さんからいただいた「まなび大学_学部_学科_専攻.xlsx」を反映したものです。
+//   情報学部は情報デザイン専攻／メディア情報専攻の2専攻、保健医療学部は医学科／看護学科の2学科で
+//   学費が異なるため、それぞれ別のキーとして持たせています。
+const MU_TUITION = {
+  law: {
+    label: '法学部（法律学科）', years: 4,
+    admissionFee: 230000,
+    tuitionY: [850000, 850000, 850000, 850000],
+    fees: [
+      { label: '施設管理費',   y: [150000, 150000, 150000, 150000] },
+      { label: 'その他納付金', y: [35000, 35000, 35000, 35000] }
+    ],
+    stem: false
+  },
+  econ: {
+    label: '経済学部（経済学科）', years: 4,
+    admissionFee: 230000,
+    tuitionY: [800000, 800000, 800000, 800000],
+    fees: [
+      { label: '施設管理費',   y: [150000, 150000, 150000, 150000] },
+      { label: 'その他納付金', y: [35000, 35000, 35000, 35000] }
+    ],
+    stem: false
+  },
+  info_design: {
+    // 分野区分：理工農系（第Ⅳ区分の対象）
+    label: '情報学部（情報デザイン専攻）', years: 4,
+    admissionFee: 250000,
+    tuitionY: [1100000, 1100000, 1100000, 1100000],
+    fees: [
+      { label: '施設管理費',   y: [180000, 150000, 150000, 150000] },
+      { label: 'その他納付金', y: [30000, 30000, 30000, 30000] }
+    ],
+    stem: true
+  },
+  info_media: {
+    // 分野区分：理工農系（第Ⅳ区分の対象）
+    label: '情報学部（メディア情報専攻）', years: 4,
+    admissionFee: 250000,
+    tuitionY: [1250000, 1250000, 1250000, 1250000],
+    fees: [
+      { label: '施設管理費',   y: [180000, 180000, 180000, 180000] },
+      { label: 'その他納付金', y: [30000, 30000, 30000, 30000] }
+    ],
+    stem: true
+  },
+  pharm: {
+    // 6年制。medical: 'pharm' により第二種の増額月額14万円（薬・獣医学課程）が有効
+    label: '薬学部（薬学科）', years: 6,
+    admissionFee: 350000,
+    tuitionY: [1450000, 1450000, 1450000, 1450000, 1450000, 1450000],
+    fees: [
+      { label: '施設管理費',   y: [320000, 320000, 320000, 320000, 320000, 320000] },
+      { label: 'その他納付金', y: [50000, 50000, 50000, 50000, 50000, 50000] }
+    ],
+    stem: false,
+    medical: 'pharm'
+  },
+  med: {
+    // 保健医療学部・医学科。6年制。medical: 'med' により第二種の増額月額16万円（医・歯学課程）が有効
+    label: '保健医療学部（医学科）', years: 6,
+    admissionFee: 2000000,
+    tuitionY: [2700000, 2700000, 2700000, 2700000, 2700000, 2700000],
+    fees: [
+      { label: '施設管理費',   y: [1050000, 1050000, 1050000, 1050000, 1050000, 1050000] },
+      { label: 'その他納付金', y: [150000, 150000, 150000, 150000, 150000, 150000] }
+    ],
+    stem: false,
+    medical: 'med'
+  },
+  nursing: {
+    // 保健医療学部・看護学科。分野区分：保健（看護等）。4年制・増額対象外
+    label: '保健医療学部（看護学科）', years: 4,
+    admissionFee: 260000,
+    tuitionY: [998000, 998000, 998000, 998000],
+    fees: [
+      { label: '施設管理費',   y: [245000, 245000, 245000, 245000] },
+      { label: 'その他納付金', y: [30000, 30000, 30000, 30000] }
+    ],
+    stem: false
+  }
+};
+
+const MU_FAC_MAP = {
+  'law':         { group: 'law',         label: '法学部（法律学科）', sub: '' },
+  'econ':        { group: 'econ',        label: '経済学部（経済学科）', sub: '' },
+  'info_design': { group: 'info_design', label: '情報学部（情報デザイン専攻）', sub: '' },
+  'info_media':  { group: 'info_media',  label: '情報学部（メディア情報専攻）', sub: '' },
+  'pharm':       { group: 'pharm',       label: '薬学部（薬学科）', sub: '6年制' },
+  'med':         { group: 'med',         label: '保健医療学部（医学科）', sub: '6年制' },
+  'nursing':     { group: 'nursing',     label: '保健医療学部（看護学科）', sub: '' }
+};
+
+
+// ─── 支援制度テーブル（JASSO基準・私立大学） ───
+// 給付型奨学金 月額（区分×通学形態）
+// ※ 第Ⅳ区分は「多子世帯」の場合のみ支給あり。「理工農系」の場合は給付型奨学金は0円（授業料等減免のみ）
+const KYUFU_MONTHLY = {
+  I:   { jitaku: 38300, jitakugai: 75800 },
+  II:  { jitaku: 25600, jitakugai: 50600 },
+  III: { jitaku: 12800, jitakugai: 25300 },
+  IV:  { jitaku: 9600,  jitakugai: 19000 }   // 第Ⅳ区分（多子世帯）の場合のみ
+};
+
+// 特例区分（生活保護世帯同居／児童養護施設等から自宅通学）に該当する場合の給付型奨学金の自宅通学月額
+// （JASSO公式ページの表のカッコ内の金額。自宅外通学には特例額の設定がないため対象外）
+const KYUFU_SPECIAL_SUPPORT_JITAKU = { I: 42500, II: 28400, III: 14200, IV: 10700 };
+
+// 給付型奨学金の月額を、特例区分（自宅通学のみ）を考慮したうえで返す
+function kyufuMonthlyFor(z) {
+  if (!z || !KYUFU_MONTHLY[z]) return 0;
+  if (ST.commute === 'jitaku' && ST.specialSupport) return KYUFU_SPECIAL_SUPPORT_JITAKU[z];
+  return KYUFU_MONTHLY[z][ST.commute];
+}
+
+// 授業料等減免 上限額（入学金ny・授業料jy）
+// ※ 第Ⅰ区分・多子世帯（many）は「国が定める上限額」そのもの。
+//   第Ⅱ〜Ⅳ区分はこの表の固定額ではなく、実際の学納金（を第Ⅰ区分の上限額で頭打ちしたもの）に
+//   GENMEN_RATIOの割合を掛けて算出する（文部科学省「授業料等減免事務処理要領」の定めのとおり。
+//   例：私立大学の上限額は70万円だが、実際の授業料が60万円なら第Ⅲ区分の減免額は
+//   60万円×1/3＝20万円であり、上限額70万円×1/3の23.3万円にはならない）。
+//   下表のII・III・IVの数値は「実際の学納金が上限額以上」の場合の参考値としてのみ残している。
+const GENMEN_TABLE = {
+  I:    { ny: 260000, jy: 700000 },
+  II:   { ny: 173400, jy: 466700 },
+  III:  { ny: 86700,  jy: 233400 },
+  IV:   { ny: 86700,  jy: 233400 },  // 私立理工農系のみ
+  many: { ny: 260000, jy: 700000 }   // 多子世帯（満額）
+};
+
+// 区分ごとの減免割合（第Ⅰ区分・多子世帯は満額＝1、第Ⅳ区分は私立大学の理工農系支援のため1/3）
+const GENMEN_RATIO = { I: 1, II: 2 / 3, III: 1 / 3, IV: 1 / 3, many: 1 };
+
+// 授業料等減免の端数処理：授業料・入学金それぞれ、最後に1度だけ10円未満を切り上げて100円単位にする
+const roundUp100 = v => Math.ceil(v / 100) * 100;
+
+// 区分・学部の学納金から、実際に適用される減免額（入学金ny・指定年次の授業料jy）を算出する
+function genmenAmountFor(zoneKey, t, year) {
+  if (!zoneKey || !GENMEN_TABLE[zoneKey]) return { ny: 0, jy: 0 };
+  const capNy = GENMEN_TABLE.I.ny, capJy = GENMEN_TABLE.I.jy;
+  const ratio = GENMEN_RATIO[zoneKey] ?? 1;
+  const baseNy = t ? Math.min(t.admissionFee, capNy) : capNy;
+  const baseJy = t ? Math.min(tuitionOfYear(t, year || 1), capJy) : capJy;
+  return { ny: roundUp100(baseNy * ratio), jy: roundUp100(baseJy * ratio) };
+}
+
+// 第一種奨学金 月額の選択肢（私立）
+const TYPE1_OPTIONS = {
+  jitaku:    [20000, 30000, 40000, 54000],
+  jitakugai: [20000, 30000, 40000, 50000, 64000]
+};
+// 第二種奨学金 月額の選択肢
+const TYPE2_OPTIONS = [20000,30000,40000,50000,60000,70000,80000,90000,100000,110000,120000];
+// 医療系の学部データの medical フラグに応じて第二種の増額月額が追加される：
+//   medical: 'med'   → 160,000円（医・歯学課程：12万円＋4万円）
+//   medical: 'pharm' → 140,000円（薬・獣医学課程：12万円＋2万円）
+const TYPE2_MEDICAL_OPTIONS = { med: [160000], pharm: [140000] };
+
+const ZONE_LABEL = { I:'第Ⅰ区分', II:'第Ⅱ区分', III:'第Ⅲ区分', IV:'第Ⅳ区分', many:'多子世帯（満額）', none:'対象外' };
+const ZONE_COLOR = { I:'var(--ku-green)', II:'var(--ku-crimson)', III:'#c07800', IV:'#7C3AED', many:'#7C3AED' };
+
+// ─── まなび大学 独自奨学金・特待生制度（学校独自奨学金・特待生制度シートより） ───
+const UNI_OPTIONS = {
+  A: { name: '給付奨学金Ａ（条件なし）',       amount: 300000, scope: 'all',      requiresNoGenmen: false },
+  // Ｂは「国の授業料等減免が優先」。年間50万円の枠から減免額を差し引いた残りが給付される
+  B: { name: '給付奨学金Ｂ（JASSO優先）',      amount: 500000, scope: 'all',      requiresNoGenmen: false, jassoPriority: true },
+  // Ｃは初年度70万円の給付だが、初年度だけ国の授業料等減免と併用不可（2年次以降は通常どおり減免を受けられる）
+  C: { name: '給付奨学金Ｃ（初年度限定）',      amount: 700000, scope: 'y1',       requiresNoGenmen: false, blocksGenmenYear1: true },
+  D: { name: '地方出身者（1都3県以外）向け',    amount: 500000, scope: 'all',      requiresNoGenmen: false },
+  E: { name: '医学生限定特待生制度',           amount: null,   scope: 'national', requiresNoGenmen: true,  facultyOnly: 'med' }
+};
+
+// 選択中の独自奨学金が、国の授業料等減免と併用できない制度かどうか（在学全期間にわたって併用不可のもの）
+function uniRequiresNoGenmen() {
+  const opt = (ST.uniChoice && ST.uniChoice !== 'none') ? UNI_OPTIONS[ST.uniChoice] : null;
+  return !!(opt && opt.requiresNoGenmen);
+}
+
+// 選択中の独自奨学金が、初年度だけ授業料等減免と併用できない制度かどうか（Ｃ：2年次以降は通常どおり減免を受けられる）
+function uniBlocksGenmenYear1() {
+  const opt = (ST.uniChoice && ST.uniChoice !== 'none') ? UNI_OPTIONS[ST.uniChoice] : null;
+  return !!(opt && opt.blocksGenmenYear1);
+}
+// 国立大学の標準的な学生納付金（文部科学省の定める標準額）。医学生限定特待生制度の減免上限の基準に使用
+const NATIONAL_STANDARD = { admissionFee: 282000, tuitionYear: 535800 };
+
+// ─── HELPERS ───
+function byId(id) { return document.getElementById(id); }
+function fmt(n) { return (n / 10000).toFixed(1) + '万円'; }
+function fmtI(n) { return Math.round(n / 10000).toLocaleString() + '万円'; }
+function floor100(n) { return Math.floor(n / 100) * 100; }
+function getNum(id, fb = 0) {
+  const el = byId(id); if (!el) return fb;
+  const v = parseFloat(normalNum(el.value));
+  return isNaN(v) ? fb : v;
+}
+function normalNum(s) {
+  return String(s || '').replace(/[０-９]/g, c => String.fromCharCode(c.charCodeAt(0) - 0xFEE0))
+    .replace(/[，,\s]/g, '').trim();
+}
+function isNum(s) { return /^\d+(\.\d+)?$/.test(s); }
+
+// ─── TOAST ───
+let toastTimer;
+function toast(msg) {
+  const el = byId('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2800);
+}
+
+// ─── PROGRESS TABS ───
+let currentStep = 1;
+function updateTabs(n) {
+  for (let i = 1; i <= 8; i++) {
+    const t = byId('tab-' + i);
+    if (!t) continue;
+    t.classList.remove('active', 'done');
+    if (i === n) t.classList.add('active');
+    else if (i < n) t.classList.add('done');
+  }
+}
+
+
+function goStep(n, allowFwd = false) {
+  const target = Math.min(6, Math.max(1, n));
+  if (!allowFwd && target > currentStep) {
+    toast('⚠ 画面下のボタンで次へ進んでください');
+    return;
+  }
+  document.querySelectorAll('.section').forEach((s, i) => s.classList.toggle('active', i + 1 === target));
+  currentStep = target;
+  updateTabs(target);
+  if (target === 2) buildTuitionInfo();
+  if (target === 3) syncSupportUI();
+  if (target === 4) updateUniOptionAvailability();
+  if (target === 5) syncLivingDefault();
+  if (target === 6) calcResult();
+  try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch(e) { window.scrollTo(0,0); }
+}
+
+// ─── 学費計算ヘルパー ───
+function getYearTotal(t, year) {
+  const i = year - 1;
+  return t.tuitionY[i] + t.fees.reduce((sum, f) => sum + (f.y[i] || 0), 0);
+}
+
+// 修業年限（4年 or 6年）の在学期間合計（入学金込み）
+function getTotalAll(t) {
+  let total = t.admissionFee;
+  for (let y = 1; y <= t.years; y++) total += getYearTotal(t, y);
+  return total;
+}
+
+function getFirstYearTotal(t) {
+  return t.admissionFee + getYearTotal(t, 1);
+}
+
+// ─── STEP 1: Faculty ───
+function selectFac(key) {
+  ST.faculty = key;
+  document.querySelectorAll('.fac-card').forEach(c => c.classList.remove('sel-a', 'sel-b', 'sel-c'));
+  const info = MU_FAC_MAP[key];
+  if (info) {
+    const el = byId('fc-' + key);
+    const t = MU_TUITION[info.group];
+    if (el) el.classList.add(t.medical ? 'sel-c' : t.stem ? 'sel-b' : 'sel-a');
+  }
+  const errEl = byId('err-fac');
+  if (errEl) errEl.style.display = 'none';
+  // 学部が確定した時点で、STEP3（JASSO奨学金）に戻った際の貸与型の選択肢
+  // （医療系の増額月額など）を最新の学部に合わせて再計算しておく
+  syncTaiyoPreview();
+}
+
+function goFacultyNext() {
+  if (!ST.faculty) {
+    const errEl = byId('err-fac');
+    if (errEl) errEl.style.display = 'block';
+    toast('⚠ 学部・学科を選択してください');
+    return;
+  }
+  goStep(2, true);
+}
+
+// ─── STEP 2: Tuition display ───
+function buildTuitionInfo() {
+  const fac = ST.faculty;
+  const info = MU_FAC_MAP[fac];
+  const t = MU_TUITION[info.group];
+  const adm = t.admissionFee;
+  const nYears = t.years;
+  const totalAll = getTotalAll(t);
+  const firstYearTotal = getFirstYearTotal(t);
+  const yearsArr = Array.from({ length: nYears }, (_, i) => i + 1);
+  const yearTotals = yearsArr.map(y => getYearTotal(t, y));
+
+  // 学部変更等で現在の学年が不整合になった場合の保険（例：6年制→4年制へ変更した場合など）
+  if (ST.currentGrade && ST.currentGrade > nYears) ST.currentGrade = null;
+
+  if (byId('grade-picker') && byId('grade-picker').style.display !== 'none') buildGradePicker();
+
+  const startYear = (ST.currentGrade && ST.currentGrade >= 2) ? ST.currentGrade : 1;
+  const isEnrolled = startYear > 1;
+  const visibleYears = yearsArr.filter(y => y >= startYear);
+  // 在学中は入学金（1年次のみ）を含めない残り期間の合計
+  const remainingTotal = visibleYears.reduce((s, y) => s + yearTotals[y - 1], 0);
+
+  const block = byId('tuition-info-block');
+  block.innerHTML = `
+    <div class="tuition-display">
+      <div class="td-fac-name">${info.label}${nYears === 6 ? '　<small style="font-size:12px;font-weight:700">6年制</small>' : ''}${isEnrolled ? `　<small style="font-size:12px;font-weight:700;color:#7FE0AE">現在${startYear}年生</small>` : ''}</div>
+      <div class="td-fee-grid">
+        ${!isEnrolled ? `<div class="td-fee-item">
+          <div class="td-fee-label">入学金</div>
+          <div class="td-fee-val">${(adm/10000).toFixed(0)}<small>万円</small></div>
+        </div>` : ''}
+        <div class="td-fee-item">
+          <div class="td-fee-label">${isEnrolled ? `${startYear}年次 合計（授業料＋諸費）` : '1年次 合計（授業料＋諸費）'}</div>
+          <div class="td-fee-val">${(yearTotals[startYear-1]/10000).toFixed(1)}<small>万円</small></div>
+        </div>
+        ${!isEnrolled ? `<div class="td-fee-item">
+          <div class="td-fee-label">初年度 納入金合計（入学金込み）</div>
+          <div class="td-fee-val">${(firstYearTotal/10000).toFixed(1)}<small>万円</small></div>
+        </div>` : `<div class="td-fee-item">
+          <div class="td-fee-label">卒業までの残り年数</div>
+          <div class="td-fee-val">${visibleYears.length}<small>年</small></div>
+        </div>`}
+      </div>
+      <div class="td-total-row">
+        <span class="td-total-label">${isEnrolled ? `卒業までの残り${visibleYears.length}年間合計` : `${nYears}年間合計`}</span>
+        <span class="td-total-val">${Math.round(remainingTotal/10000)}<small>万円</small></span>
+      </div>
+      <div class="td-note">※ 2026年度入学生 / エクセルデータより / 諸費込み${isEnrolled ? '（入学金は在学中のため対象外です）' : ''}</div>
+    </div>
+
+    <details class="card fee-detail">
+      <summary class="card-title fee-detail-summary">年次別 内訳<span class="fee-detail-caret"></span></summary>
+      <div class="fee-table-wrap">
+        <table class="fee-table">
+          <thead>
+            <tr>
+              <th>項目</th>
+              ${visibleYears.map(y => `<th>${y}年次</th>`).join('')}
+            </tr>
+          </thead>
+          <tbody>
+            ${!isEnrolled ? `<tr>
+              <td>入学金</td>
+              ${visibleYears.map(y => y === 1 ? `<td>${(adm/10000).toFixed(0)}万円</td>` : '<td class="no-support-col">—</td>').join('')}
+            </tr>` : ''}
+            <tr>
+              <td>授業料</td>
+              ${visibleYears.map(y => `<td>${t.tuitionY[y-1].toLocaleString()}円</td>`).join('')}
+            </tr>
+            ${t.fees.map(f => `<tr>
+              <td>${f.label}</td>
+              ${visibleYears.map(y => f.y[y-1] > 0 ? `<td>${f.y[y-1].toLocaleString()}円</td>` : '<td class="no-support-col">—</td>').join('')}
+            </tr>`).join('')}
+            <tr>
+              <td><strong>年次合計</strong></td>
+              ${visibleYears.map(y => `<td><strong>${yearTotals[y-1].toLocaleString()}円</strong></td>`).join('')}
+            </tr>
+            <tr>
+              <td><strong>${isEnrolled ? '今年度合計' : '初年度合計'}</strong></td>
+              <td colspan="${visibleYears.length}" style="font-weight:800;color:var(--ku-navy)">${(isEnrolled ? yearTotals[startYear-1] : firstYearTotal).toLocaleString()}円${isEnrolled ? '' : '（入学金含む）'}</td>
+            </tr>
+            <tr>
+              <td><strong>${isEnrolled ? `残り${visibleYears.length}年間合計` : `${nYears}年間合計`}</strong></td>
+              <td colspan="${visibleYears.length}" class="amt-strong" style="color:var(--ku-navy)">${remainingTotal.toLocaleString()}円</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </details>
+  `;
+}
+
+// ─── 在学状況（新入学生／在学中）───
+function setEnrollType(type, btn) {
+  document.querySelectorAll('#eg-new, #eg-current').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+  const picker = byId('grade-picker');
+  const note = byId('grade-note');
+  if (type === 'new') {
+    ST.currentGrade = null;
+    if (picker) picker.style.display = 'none';
+    if (note) note.innerHTML = '';
+  } else {
+    if (picker) picker.style.display = 'block';
+    buildGradePicker();
+    if (note) note.innerHTML = ST.currentGrade ? '' : '<div class="err-msg" style="display:block">現在の学年を選択してください</div>';
+  }
+  updateIchijikinAvailability();
+  buildTuitionInfo();
+}
+
+function buildGradePicker() {
+  const t = currentTuition();
+  const row = byId('grade-picker-row');
+  if (!t || !row) return;
+  let html = '';
+  for (let g = 2; g <= t.years; g++) {
+    html += `<button class="tog-btn${ST.currentGrade === g ? ' sel' : ''}" onclick="setGrade(${g},this)">${g}年生</button>`;
+  }
+  row.innerHTML = html;
+}
+
+function setGrade(g, btn) {
+  ST.currentGrade = g;
+  document.querySelectorAll('#grade-picker-row .tog-btn').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+  const note = byId('grade-note');
+  if (note) note.innerHTML = '';
+  updateIchijikinAvailability();
+  buildTuitionInfo();
+}
+
+function goTuitionNext() {
+  const isCurrent = byId('eg-current') && byId('eg-current').classList.contains('sel');
+  if (isCurrent && !ST.currentGrade) {
+    const note = byId('grade-note');
+    if (note) note.innerHTML = '<div class="err-msg" style="display:block">現在の学年を選択してください</div>';
+    toast('⚠ 現在の学年を選択してください');
+    return;
+  }
+  goStep(3, true);
+}
+
+
+// ─── STEP 3: JASSO奨学金の入力 ───
+function tuitionOfYear(t, y) {
+  return t.tuitionY[y - 1];
+}
+
+function currentTuition() {
+  const info = MU_FAC_MAP[ST.faculty];
+  return info ? MU_TUITION[info.group] : null;
+}
+
+function setCommute(val, btn) {
+  ST.commute = val;
+  document.querySelectorAll('#cm-jitaku, #cm-jitakugai').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+  syncTaiyoPreview();
+  syncKyufuPreview();
+  syncLivingDefault();
+}
+
+function setTashi(val, btn) {
+  ST.tashi = val;
+  document.querySelectorAll('#tashi-no, #tashi-yes').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+  if (val && uniRequiresNoGenmen()) {
+    const nm = UNI_OPTIONS[ST.uniChoice].name;
+    ST.uniChoice = null;
+    document.querySelectorAll('#uni-option-grid .pat-card').forEach(c => c.classList.remove('sel-crimson'));
+    toast(`⚠ 多子世帯（授業料等減免あり）を選択したため、${nm}の選択を解除しました`);
+  }
+  updateKyufuIVAvailability();
+  updateGenmenZoneAvailability();
+  syncTaiyoPreview();
+  syncKyufuPreview();
+  syncGenmenPreview();
+}
+
+// 給付型奨学金の「第Ⅳ区分」は多子世帯の場合のみ支給があるため、
+// 多子世帯ではない場合はボタンを押せなくする（理工農系は授業料等減免の方で選択）
+function updateKyufuIVAvailability() {
+  const ivBtn = byId('kz-IV');
+  if (!ivBtn) return;
+  ivBtn.disabled = !ST.tashi;
+  if (!ST.tashi && ST.kyufuZone === 'IV') {
+    ST.kyufuZone = null;
+    document.querySelectorAll('[id^="kz-"]').forEach(b => b.classList.remove('sel'));
+    syncKyufuPreview();
+    syncTaiyoPreview();
+    }
+}
+
+function setKyufuZone(z, btn) {
+  ST.kyufuZone = z;
+  document.querySelectorAll('[id^="kz-"]').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+  byId('err-kz').style.display = 'none';
+  syncKyufuPreview();
+  updateGenmenZoneAvailability();
+  suggestGenmenZoneFromKyufu(z);
+  syncGenmenPreview();
+  syncTaiyoPreview();
+}
+
+// 多子世帯ではない場合：
+// ・給付型で第Ⅰ〜Ⅲ区分を選ぶと、授業料等減免も同じ区分に自動反映する（通常は同じ区分になるため）。
+//   ただし、これはあくまで初期候補としての自動反映であり、ボタン自体は常に押せる状態にしておく。
+//   以前は自動反映後に他の区分ボタンを無効化していたため、「給付=第Ⅲ、減免=対象外」のように
+//   意図的に区分を変えたい場合や誤操作を直したい場合に、二度と選び直せなくなる不具合があった。
+//   区分の食い違いは zoneMismatchNote() の警告で気づけるようにする。
+// ・第Ⅳ区分（理工農系）だけは、私立理工農系の学部を選んでいる場合のみ選択できる（技術的な制約）
+function updateGenmenZoneAvailability() {
+  if (ST.tashi) return; // 多子世帯の場合は区分ピッカー自体を表示していないため対象外
+  const btns = { I: byId('gz-I'), II: byId('gz-II'), III: byId('gz-III'), IV: byId('gz-IV'), none: byId('gz-none') };
+  if (!btns.I) return;
+
+  // 第Ⅳ区分（理工農系）は、私立理工農系の学部（stem: true）を選択している場合のみ選択可能
+  const t = currentTuition();
+  const facStem = t ? t.stem : false;
+
+  if (uniRequiresNoGenmen()) {
+    // 給付奨学金Ｃ・医学生限定特待生制度（Ｅ）は授業料等減免とのみ併用不可（給付型は区分どおり利用可）のため、
+    // 給付型の区分にかかわらず授業料等減免は「対象外」に固定する
+    ['I', 'II', 'III', 'IV'].forEach(k => { if (btns[k]) btns[k].disabled = true; });
+    if (btns.none) btns.none.disabled = false;
+    if (ST.genmenZone !== 'none') {
+      ST.genmenZone = 'none';
+      document.querySelectorAll('[id^="gz-"]').forEach(b => b.classList.remove('sel'));
+      if (btns.none) btns.none.classList.add('sel');
+    }
+    return;
+  }
+
+  // I〜III・対象外はいつでも選択・変更できるようにする
+  ['I', 'II', 'III', 'none'].forEach(k => { if (btns[k]) btns[k].disabled = false; });
+  // 第Ⅳ区分（理工農系）だけは学部側の制約で無効化
+  if (btns.IV) btns.IV.disabled = !facStem;
+  if (ST.genmenZone === 'IV' && !facStem) {
+    ST.genmenZone = null;
+    document.querySelectorAll('[id^="gz-"]').forEach(b => b.classList.remove('sel'));
+  }
+}
+
+// 給付型奨学金の区分が変わったときだけ、授業料等減免に同じ区分を初期候補として自動反映する
+// （setKyufuZoneから呼ぶ。ユーザーが減免側を個別に選び直した後は、この関数を経由しない限り上書きしない）
+function suggestGenmenZoneFromKyufu(kz) {
+  if (ST.tashi || uniRequiresNoGenmen()) return;
+  const btns = { I: byId('gz-I'), II: byId('gz-II'), III: byId('gz-III') };
+  if (kz === 'I' || kz === 'II' || kz === 'III') {
+    if (ST.genmenZone !== kz) setGenmenZone(kz, btns[kz]);
+  }
+}
+
+function setGenmenZone(z, btn) {
+  ST.genmenZone = z;
+  document.querySelectorAll('[id^="gz-"]').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+  byId('err-gz').style.display = 'none';
+  syncGenmenPreview();
+  syncTaiyoPreview();
+}
+
+// 貸与型奨学金は「区分判定ソフトの結果」だけを入力する（金額は入力しない）。
+// 家計基準は 併用 ＜ 第一種 ＜ 第二種 の順に緩くなる入れ子構造のため、判定結果は次の4つに集約される。
+//   heiyo  ：併用基準を満たす（第一種・第二種・併用のいずれも可／第一種の最高月額も選択可）
+//   ichini ：第一種・第二種は可だが併用は不可（第一種は最高月額以外から選択）
+//   ni     ：第二種のみ可
+//   none   ：いずれも対象外
+function setTaiyoElig(val, btn) {
+  ST.taiyoElig = val;
+  document.querySelectorAll('[id^="te-"]').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+  const err = byId('err-te');
+  if (err) err.style.display = 'none';
+  syncTaiyoPreview();
+}
+
+function setSpecialSupport(on, btn) {
+  ST.specialSupport = on;
+  document.querySelectorAll('#ss-no, #ss-yes').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+  syncTaiyoPreview();
+  syncKyufuPreview();
+}
+
+// JASSOの授業料等減免を受けているかどうか（多子世帯フラグ設定時のＥとの矛盾判定などに使用）
+function hasJassoGenmen() {
+  return ST.tashi || (ST.genmenZone && ST.genmenZone !== 'none');
+}
+
+// 学校独自奨学金の「利用しない／利用する」トグル。既定は「利用しない」で、
+// 「利用する」を押したときだけＡ〜Ｅの選択肢を表示する
+function setUniOn(on, btn) {
+  document.querySelectorAll('#us-uni-no, #us-uni-yes').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+  const block = byId('uni-option-block');
+  if (!on) {
+    ST.uniChoice = 'none';
+    document.querySelectorAll('#uni-option-grid .pat-card').forEach(c => c.classList.remove('sel-crimson'));
+    if (block) block.style.display = 'none';
+    byId('err-uni').style.display = 'none';
+    updateUniENote();
+    return;
+  }
+  if (ST.uniChoice === 'none') ST.uniChoice = null;
+  if (block) block.style.display = 'block';
+  updateUniOptionAvailability();
+}
+
+function selectUniOption(key) {
+  const opt = key === 'none' ? null : UNI_OPTIONS[key];
+  if (opt && opt.facultyOnly && ST.faculty !== opt.facultyOnly) {
+    toast('⚠ 対象学部を選択している場合のみ選べます');
+    return;
+  }
+  ST.uniChoice = key;
+  document.querySelectorAll('#uni-option-grid .pat-card').forEach(c => c.classList.remove('sel-crimson'));
+  const el = byId('uni-opt-' + key);
+  if (el) el.classList.add('sel-crimson');
+  byId('err-uni').style.display = 'none';
+  // 給付奨学金Ｃ・医学生限定特待生制度（Ｅ）はJASSOの授業料等減免と併用できないため、選択と同時にSTEP3側を強制的に切り替える
+  if (opt && opt.requiresNoGenmen) forceGenmenNoneForUni();
+  updateUniENote();
+}
+
+// 給付奨学金Ｃ・医学生限定特待生制度（Ｅ）はJASSOの授業料等減免と併用できないため、
+// これらを選択した場合はSTEP3（JASSO奨学金）の授業料等減免のみを自動的に「対象外」に切り替える（給付型奨学金は区分どおり利用可）
+function forceGenmenNoneForUni() {
+  ST.tashi = false;
+  ST.genmenZone = 'none';
+
+  document.querySelectorAll('#tashi-no, #tashi-yes').forEach(b => b.classList.remove('sel'));
+  const tashiNoBtn = byId('tashi-no');
+  if (tashiNoBtn) tashiNoBtn.classList.add('sel');
+
+  document.querySelectorAll('[id^="gz-"]').forEach(b => b.classList.remove('sel'));
+  const gzNoneBtn = byId('gz-none');
+  if (gzNoneBtn) gzNoneBtn.classList.add('sel');
+
+  updateKyufuIVAvailability();
+  updateGenmenZoneAvailability();
+  syncKyufuPreview();
+  syncGenmenPreview();
+  syncTaiyoPreview();
+}
+
+// Ｃ・Ｅ選択中はSTEP4に注意書きを表示する
+function updateUniENote() {
+  const note = byId('uni-e-note');
+  if (!note) return;
+  if (uniRequiresNoGenmen()) {
+    note.innerHTML = `<div class="info-box" style="margin-top:10px;border-color:rgba(200,150,12,0.3);background:rgba(240,165,0,0.07)">⚠ ${UNI_OPTIONS[ST.uniChoice].name}を選択したため、STEP3（JASSO奨学金）の授業料等減免は自動的に「対象外」に設定されています。この制度とJASSOの授業料等減免は併用できません。</div>`;
+  } else if (uniBlocksGenmenYear1()) {
+    note.innerHTML = `<div class="info-box" style="margin-top:10px">${UNI_OPTIONS[ST.uniChoice].name}は<strong>初年度のみ</strong>JASSOの<strong>授業料等減免</strong>と併用できません（初年度の減免は0円として計算します）。<strong>2年次以降</strong>はSTEP3で選んだ授業料等減免を通常どおり受けられます。なお<strong>給付型奨学金は初年度から</strong>区分どおり受けられます。</div>`;
+  } else {
+    note.innerHTML = '';
+  }
+}
+
+// JASSOの授業料等減免の入力状況・選択中の学部に応じて、独自奨学金の選択可否を更新する
+function updateUniOptionAvailability() {
+  // Ｅ選択中は、STEP3側が後から変更されていてもまずここで「対象外」に揃える（在学全期間にわたり併用不可のため）
+  if (uniRequiresNoGenmen()) forceGenmenNoneForUni();
+
+  // Ａ・Ｂ・Ｃ・ＤはJASSOの授業料等減免と併用できる（Ｃは初年度のみ併用不可）ため、
+  // 減免の状況に関わらず選択可能（ブロックしない）
+  const isMed = ST.faculty === 'med';
+  const eEl = byId('uni-opt-E');
+  if (eEl) eEl.style.display = isMed ? '' : 'none';
+  if (!isMed && ST.uniChoice === 'E') {
+    ST.uniChoice = null;
+    document.querySelectorAll('#uni-option-grid .pat-card').forEach(c => c.classList.remove('sel-crimson'));
+    toast('⚠ 保健医療学部（医学科）以外が選択されているため、医学生限定特待生制度の選択を解除しました');
+  }
+
+  const note = byId('uni-disabled-note');
+  if (note) note.innerHTML = '';
+  updateUniENote();
+}
+
+// 併給調整後の第一種月額の選択肢（私立大学・昼間部）
+// 多子世帯（拡充対象）：第Ⅰ〜Ⅳ区分はいずれも自宅・自宅外とも0円／区分を超える所得の場合は自宅0円・自宅外5,600円
+// 多子世帯でない場合　：第Ⅰ・Ⅱ区分＝0円 ／ 第Ⅲ区分＝自宅21,700円・自宅外19,200円 ／ 第Ⅳ区分（理工農系）＝自宅20,000/34,500円・自宅外20,000/30,000/44,500円
+//
+// 特例区分（生活保護世帯同居／児童養護施設等から自宅通学）に該当する場合、上記のうち自宅通学の3パターンは
+// JASSO併給調整表のカッコ内の特例額に置き換わる（自宅外通学には特例額の設定がないため対象外）：
+//   多子世帯（所得超過・自宅） 0円 → 5,600円
+//   第Ⅲ区分（自宅）          21,700円 → 20,000円／30,300円
+//   第Ⅳ区分・理工農系（自宅）  20,000円／34,500円 → 20,000円／30,000円／44,500円
+const TYPE1_SPECIAL_SUPPORT = {
+  tashiOver: [5600],
+  III: [20000, 30300],
+  IV: [20000, 30000, 44500]
+};
+
+function type1AdjustedOptions() {
+  const key = ST.commute === 'jitakugai' ? 'jitakugai' : 'jitaku';
+  const kz = ST.kyufuZone;
+  const gz = ST.genmenZone;
+  const isSpecial = ST.specialSupport && key === 'jitaku';
+  const specialSuffix = ' ／ 特例区分（生活保護世帯同居・児童養護施設等）の特例額';
+
+  if (ST.tashi) {
+    if (kz && kz !== 'none') {
+      const kzLbl = kz === 'IV' ? '第Ⅳ区分（多子世帯）' : `${ZONE_LABEL[kz]}（多子世帯）`;
+      return { opts: [0], reason: `${kzLbl}・給付型受給中` };
+    }
+    if (isSpecial) {
+      return { opts: TYPE1_SPECIAL_SUPPORT.tashiOver, reason: '多子世帯（所得制限なし・授業料等減免のみ）' + specialSuffix };
+    }
+    return { opts: key === 'jitaku' ? [0] : [5600], reason: '多子世帯（所得制限なし・授業料等減免のみ）' };
+  }
+
+  if (kz === 'I' || kz === 'II') {
+    return { opts: [0], reason: `${ZONE_LABEL[kz]}（給付型受給中）` };
+  }
+  if (kz === 'III') {
+    if (isSpecial) {
+      return { opts: TYPE1_SPECIAL_SUPPORT.III, reason: '第Ⅲ区分（給付型受給中）' + specialSuffix };
+    }
+    return { opts: [key === 'jitaku' ? 21700 : 19200], reason: '第Ⅲ区分（給付型受給中）' };
+  }
+  if (kz === 'IV' || gz === 'IV') {
+    if (isSpecial) {
+      return { opts: TYPE1_SPECIAL_SUPPORT.IV, reason: '第Ⅳ区分（私立理工農系・授業料等減免のみ）' + specialSuffix };
+    }
+    return { opts: key === 'jitaku' ? [20000, 34500] : [20000, 30000, 44500], reason: '第Ⅳ区分（私立理工農系・授業料等減免のみ）' };
+  }
+  return { opts: TYPE1_OPTIONS[key], reason: null };
+}
+
+// 第二種奨学金の選択できる月額（医療系の学部を選んでいる場合は増額月額を追加）
+function type2OptionList() {
+  const t = currentTuition();
+  const extra = (t && t.medical && TYPE2_MEDICAL_OPTIONS[t.medical]) ? TYPE2_MEDICAL_OPTIONS[t.medical] : [];
+  return { base: TYPE2_OPTIONS.slice(), extra: extra.slice(), medical: t ? t.medical : null };
+}
+
+// STEP3で選んだ判定結果から、実際に選べる第一種・第二種の月額を組み立てる。
+// 第一種の「最高月額」は併用貸与の家計基準を満たす場合のみ選択できる（JASSO）。
+// そのため heiyo 以外では、選べる月額のリストから最高額（リストの末尾）を除外する。
+// 併給調整がかかる区分で調整後の月額が1つしかない場合は、機械的に除外できないため
+// 金額はそのまま表示し、確認をうながす注記を添える。
+function taiyoAvailability() {
+  const e = ST.taiyoElig;
+  const res = { elig: e, t1: null, t2: null, maxAllowed: e === 'heiyo', maxNote: '' };
+  if (!e || e === 'none') return res;
+
+  if (e === 'heiyo' || e === 'ichini') {
+    const adj = type1AdjustedOptions();
+    let opts = adj.opts.slice();
+    if (e !== 'heiyo') {
+      if (opts.length > 1) {
+        opts = opts.slice(0, -1); // 最高月額（末尾）を除外
+        res.maxNote = 'cut';
+      } else if (opts.length === 1 && opts[0] !== 0) {
+        res.maxNote = 'check'; // 調整後の月額が1つしかない区分（要確認）
+      }
+    }
+    res.t1 = { opts: opts, reason: adj.reason };
+  }
+  res.t2 = type2OptionList();
+  return res;
+}
+
+const TAIYO_ELIG_LABEL = {
+  heiyo:  '併用（第一種＋第二種）',
+  ichini: '第一種・第二種（併用は不可）',
+  ni:     '第二種のみ',
+  none:   '対象外'
+};
+
+const fmtYenList = a => a.map(v => v.toLocaleString() + '円').join(' / ');
+
+// 年次別テーブル用：万円単位に丸めて表示する（四捨五入。0円は「0万円」ではなく呼び出し側で「—」に出し分ける）
+const fmtMan = v => Math.round(v / 10000).toLocaleString() + '万円';
+
+// STEP3の貸与型カードに表示するプレビュー（STEP6の案内と同じ内容の要約）
+function syncTaiyoPreview() {
+  const box = byId('taiyo-preview');
+  if (!box) return;
+  const e = ST.taiyoElig;
+  if (!e) { box.innerHTML = ''; return; }
+  if (e === 'none') {
+    box.innerHTML = `<div class="info-box" style="margin-top:10px">貸与型奨学金（第一種・第二種）と入学時特別増額は<strong>利用できません</strong>。</div>`;
+    return;
+  }
+  const av = taiyoAvailability();
+  let rows = '';
+  if (av.t1) {
+    const zero = av.t1.opts.length === 1 && av.t1.opts[0] === 0;
+    rows += `<div>第一種（無利子）：<strong>${zero ? '0円' : fmtYenList(av.t1.opts)}</strong></div>`;
+  }
+  const t2 = av.t2;
+  rows += `<div style="margin-top:4px">第二種（有利子）：<strong>${t2.base[0].toLocaleString()}円〜${t2.base[t2.base.length - 1].toLocaleString()}円${t2.extra.length ? `／${t2.extra[0].toLocaleString()}円` : ''}</strong></div>`;
+  box.innerHTML = `<div class="info-box green" style="margin-top:10px">
+    <strong>利用できる貸与型：${TAIYO_ELIG_LABEL[e]}</strong><br>${rows}
+  </div>`;
+}
+
+// ─── STEP 6: 返還不要の支援（授業料等減免・給付型奨学金・独自奨学金）の内訳 ───
+// いくら支援されるのかを、STEP6の早い位置でひと目で分かるように分解して表示する。
+function supportBreakdownCardHtml(r, showFull, periodLabel, firstIdx, isEnrolled, gzLabel, kzLabel) {
+  const yen = v => v.toLocaleString() + '円';
+  const startLabel = isEnrolled ? `${r.startYear}年次` : '1年次';
+
+  // 授業料等減免（年次ごとに授業料が変わる学部があるため、初年度の額と変動有無を見る）
+  const redOfYear = i => r.redTuitionY[i] + (i === 0 ? r.reductionAdmission : 0);
+  const redTuitionFirst = r.redTuitionY[firstIdx];
+  const redVaries = r.visibleYears.some(y => r.redTuitionY[y - 1] !== redTuitionFirst);
+  const hasGenmen = !!r.genmenRow;
+
+  // 学校独自奨学金
+  const uniFirst = r.uniY[firstIdx];
+  const uniVaries = r.visibleYears.some(y => r.uniY[y - 1] !== uniFirst);
+  const hasUni = r.uniTotal4 > 0 || uniFirst > 0;
+
+  // 給付型奨学金（区分の再判定があるため累計は出さず、年額までを表示する方針）
+  const hasKyufu = showFull && r.kyufuAnnual > 0;
+
+  // 返還不要の支援がまったくない場合は、空の内訳を並べず1行の案内にまとめる
+  if (!hasGenmen && !hasKyufu && !hasUni) {
+    return `<div class="card">
+      <div class="card-title">受けられる支援の内訳（返還不要）</div>
+      <div class="info-box" style="margin-top:0">入力した区分では、<strong>授業料等減免・給付型奨学金のいずれも対象外</strong>です。学費は全額が自己負担となるため、貸与型奨学金（下記）や学校独自の奨学金・教育ローンの併用をご検討ください。</div>
+    </div>`;
+  }
+
+  const block = (title, badge, badgeColor, lines, total, totalLabel) => `
+    <div style="border:1.5px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:10px">
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px">
+        <strong style="font-size:13px">${title}</strong>
+        ${badge ? `<span style="font-size:11px;font-weight:700;color:${badgeColor};border:1px solid ${badgeColor};border-radius:999px;padding:1px 8px">${badge}</span>` : ''}
+      </div>
+      <div style="font-size:12px;line-height:1.9">${lines}</div>
+      ${total !== null ? `<div style="display:flex;justify-content:space-between;margin-top:8px;padding-top:8px;border-top:1px dashed rgba(216,231,221,0.7);font-size:13px">
+        <span style="color:var(--text-2)">${totalLabel}</span><strong style="color:var(--ku-green)">▲ ${yen(total)}</strong>
+      </div>` : ''}
+    </div>`;
+
+  const item = (label, value, sub) => `<div style="display:flex;justify-content:space-between;gap:12px">
+    <span style="color:var(--text-2)">${label}</span>
+    <span style="text-align:right"><strong>${value}</strong>${sub ? `<br><span style="font-size:11px;color:var(--text-3)">${sub}</span>` : ''}</span>
+  </div>`;
+
+  let blocks = '';
+
+  // ① 授業料等減免
+  if (hasGenmen) {
+    let lines = '';
+    const blockY1 = uniBlocksGenmenYear1() && firstIdx === 0;
+    if (!isEnrolled && r.reductionAdmission > 0) {
+      lines += item('入学金の減免', '▲ ' + yen(r.reductionAdmission), `1年次のみ（入学金 ${yen(r.tuition.admissionFee)} のうち）`);
+    }
+    lines += item(redVaries ? `授業料の減免（${startLabel}）` : '授業料の減免（年間）',
+      '▲ ' + yen(redTuitionFirst),
+      blockY1 ? `${r.uniName}と併用不可のため初年度は0円（2年次以降は通常どおり適用。給付型奨学金は初年度から受けられます）`
+        : (redVaries ? '年次により金額が変わります（内訳は下の表をご覧ください）' : `${periodLabel}とも同額`));
+    blocks += block('① 授業料等減免', gzLabel, r.gz ? '#29B6E8' : 'var(--text-3)',
+      lines, r.genmenTotal4, `${periodLabel}の減免合計`);
+  } else {
+    blocks += block('① 授業料等減免', '対象外', 'var(--text-3)',
+      `<span style="color:var(--text-3)">この条件では授業料等減免の対象外です。</span>`, null, null);
+  }
+
+  // ② 給付型奨学金
+  if (hasKyufu) {
+    const lines = item('支給月額', yen(r.kyufuM), `${kzLabel}・${ST.commute === 'jitakugai' ? '自宅外通学' : '自宅通学'}`)
+      + item('年間の支給額', yen(r.kyufuAnnual), '毎年（12か月分）');
+    const specialNote = (ST.commute === 'jitaku' && ST.specialSupport)
+      ? `<div style="font-size:11px;color:var(--text-3);margin-top:2px">※ 特例区分（生活保護世帯同居・児童養護施設等）の特例額を適用しています。</div>` : '';
+    blocks += block('② 給付型奨学金', kzLabel, r.kz ? '#F5A623' : 'var(--text-3)',
+      lines + specialNote + `<div style="font-size:11px;color:var(--text-3);margin-top:6px">※ 給付型奨学金は毎年の再判定で区分が変わることがあるため、卒業までの累計は表示していません。</div>`,
+      null, null);
+  } else if (showFull) {
+    blocks += block('② 給付型奨学金', kzLabel, 'var(--text-3)',
+      `<span style="color:var(--text-3)">この条件では支給額が0円です${r.kz === 'IV' && !ST.tashi ? '（第Ⅳ区分・理工農系は授業料等減免のみが対象）' : ''}。</span>`, null, null);
+  }
+
+  // ③ 学校独自奨学金
+  if (hasUni) {
+    const uniSub = r.uniScope === 'y1' ? '初年度のみ'
+      : r.uniScope === 'national' ? '国立大学の標準額との差額を減免'
+      : r.uniJassoPriority ? `年間上限 ${yen(r.uniBaseAmount)} − 授業料等減免 ${yen(r.redTuitionY[firstIdx])}（JASSO優先）`
+      : (uniVaries ? '年次により金額が変わります' : `${periodLabel}とも同額`);
+    let lines = item(uniVaries ? `減免・給付額（${startLabel}）` : '減免・給付額（年間）',
+      '▲ ' + yen(uniFirst), uniSub);
+    blocks += block('③ 学校独自の奨学金', r.uniName, 'var(--ku-blue)', lines, r.uniTotal4, `${periodLabel}の合計`);
+  } else if (r.uniJassoPriority) {
+    blocks += block('③ 学校独自の奨学金', r.uniName, 'var(--text-3)',
+      `<span style="color:var(--text-3)">授業料等減免（年間 ${yen(r.redTuitionY[firstIdx])}）が年間上限 ${yen(r.uniBaseAmount)} を上回るため、この奨学金は利用できません。</span>`,
+      null, null);
+  }
+
+  // 合計（表示中の初年度）
+  const supFirst = redOfYear(firstIdx) + (hasKyufu ? r.kyufuAnnual : 0) + uniFirst;
+  const grossFirst = r.grossY[firstIdx];
+  const rate = grossFirst > 0 ? Math.min(100, Math.round(supFirst / grossFirst * 1000) / 10) : 0;
+  const over = supFirst > grossFirst;
+
+  const bar = `<div style="height:10px;border-radius:999px;background:rgba(216,231,221,0.55);overflow:hidden;margin:8px 0 4px">
+      <div style="height:100%;width:${Math.min(100, rate)}%;background:linear-gradient(90deg,var(--ku-green),#7FE0AE)"></div>
+    </div>
+    <div style="font-size:11px;color:var(--text-3)">${startLabel}の学費 ${yen(grossFirst)} に対して <strong style="color:var(--ku-green)">${rate}%</strong> が支援でカバーされます</div>`;
+
+  return `<div class="card">
+    <div class="card-title">受けられる支援の内訳（返還不要）</div>
+    <div style="border:2px solid var(--ku-green);border-radius:12px;padding:12px 14px;background:rgba(28,138,86,0.05)">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px">
+        <span style="font-size:13px;font-weight:700">${startLabel}に受けられる支援の合計</span>
+        <strong style="font-size:20px;color:var(--ku-green)">▲ ${yen(supFirst)}</strong>
+      </div>
+      ${bar}
+    </div>
+    <div style="margin-top:12px">
+      <div style="margin-top:12px">
+        ${blocks}
+        ${over ? `<div class="info-box" style="margin-top:12px">支援の合計が${startLabel}の学費を上回っています。授業料等減免は学費を超えて支給されることはありませんが、<strong>給付型奨学金は学費とは別に本人へ振り込まれ、教科書代・通学費・生活費などに使えます</strong>。上の試算では実質負担を0円として表示しています。</div>` : ''}
+        <div class="info-box" style="margin-top:12px">ここに挙げた支援はすべて<strong>返還不要</strong>です。金額は入力した区分に基づく試算で、実際の採否・支給額はJASSO・大学の審査によります。</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ─── STEP 6: 利用できる貸与型奨学金の案内 ───
+// 金額は試算に含めず、「いくらまで借りられるか」の範囲だけを提示する。
+function taiyoGuideCardHtml(r) {
+  const e = ST.taiyoElig;
+  if (!e) return '';
+  if (e === 'none') {
+    return `<div class="card">
+      <div class="card-title">貸与型奨学金（利用できる範囲）</div>
+      <div class="info-box" style="margin-top:0">区分判定ソフトの結果は<strong>対象外</strong>のため、第一種・第二種・入学時特別増額（一時金）はいずれも利用できません。家計が急変した場合などは、進学先の奨学金窓口にご相談ください。</div>
+    </div>`;
+  }
+
+  const av = taiyoAvailability();
+  const head = e === 'heiyo'
+    ? '第一種と第二種の<strong>併用</strong>まで利用できます'
+    : e === 'ichini'
+      ? '<strong>第一種または第二種</strong>を利用できます（併用はできません）'
+      : '<strong>第二種のみ</strong>利用できます';
+
+  const row = (label, value, sub) => `<div style="display:flex;justify-content:space-between;gap:14px;border-bottom:1px dashed rgba(216,231,221,0.6);padding:7px 0">
+    <span style="color:var(--text-2);flex-shrink:0">${label}</span>
+    <span style="text-align:right"><strong>${value}</strong>${sub ? `<br><span style="font-size:11px;color:var(--text-3)">${sub}</span>` : ''}</span>
+  </div>`;
+
+  let rows = '';
+  if (av.t1) {
+    const zero = av.t1.opts.length === 1 && av.t1.opts[0] === 0;
+    const sub = zero
+      ? '併給調整により月額0円（第一種の採用自体は可能です）'
+      : (av.t1.reason ? `${av.t1.reason}のため併給調整後の月額です`
+        : (e === 'heiyo' ? '併用基準を満たすため最高月額まで選べます' : '併用基準に該当しないため最高月額は選べません'));
+    rows += row('第一種（無利子）の月額', zero ? '0円' : fmtYenList(av.t1.opts), sub);
+  } else {
+    rows += row('第一種（無利子）', '利用できません', '第二種のみが対象です');
+  }
+
+  const t2 = av.t2;
+  const t2sub = '1万円単位で選択できます'
+    + (t2.extra.length ? ` ／ ${t2.medical === 'med' ? '医・歯学課程' : '薬・獣医学課程'}のみ選べる増額月額です` : '');
+  const t2headline = `${t2.base[0].toLocaleString()}円 〜 ${t2.base[t2.base.length - 1].toLocaleString()}円`
+    + (t2.extra.length ? `／${t2.extra[0].toLocaleString()}円` : '');
+  rows += row('第二種（有利子）の月額', t2headline, t2sub);
+
+  const ijEnrolled = ST.currentGrade && ST.currentGrade >= 2;
+  rows += row('入学時特別増額（一時金）',
+    ijEnrolled ? '利用不可' : '10万円 〜 50万円',
+    ijEnrolled ? '初年度のみの制度のため、在学中は選択できません' : '初年度に一度だけ・10万円単位（有利子）。教育ローンを利用できなかった方が対象');
+
+  return `<div class="card">
+    <div class="card-title">利用できる貸与型奨学金（要返還）</div>
+    <div class="info-box green" style="margin-top:0;margin-bottom:12px">
+      あなたが利用できる貸与型は <strong>${TAIYO_ELIG_LABEL[e]}</strong> です。${head}。
+    </div>
+    <div style="font-size:12px;line-height:1.7">${rows}</div>
+    ${taiyoMaxNoteHtml(av)}
+    ${taiyoPlanInputHtml(r, av)}
+    <div class="info-box" style="margin-top:12px">
+      上に表示しているのは<strong>借りられる月額の範囲</strong>です。実際にいくら借りるかは、上の実質負担・差引自己資金をご覧いただき、<strong>ご本人・ご家庭で必要な分だけ</strong>お決めください。<br>
+      貸与型奨学金は<strong>卒業後に返還が必要</strong>です。第二種・入学時特別増額には利子が付きます。
+    </div>
+  </div>`;
+}
+
+// ─── STEP 6: 借りる金額の入力（第一種・第二種の月額／入学時特別増額）───
+// ここで選んだ金額は試算・年次別グラフ（赤）・年次別テーブルに反映される。
+// 「利用しない（0円）」のままなら、これまでどおり金額には一切影響しない。
+function taiyoPlanInputHtml(r, av) {
+  const opt = (v, cur, label) => `<option value="${v}"${Number(cur) === v ? ' selected' : ''}>${label}</option>`;
+  let fields = '';
+
+  // 第一種（無利子）：選択肢に月額と一緒に年額（月額×12）も表記する
+  if (av.t1 && !(av.t1.opts.length === 1 && av.t1.opts[0] === 0)) {
+    fields += `<div class="fg">
+      <label>第一種（無利子）の月額</label>
+      <select id="t1-plan" onchange="setTaiyoPlan('t1', this.value)">
+        ${opt(0, ST.t1PlanM, '利用しない（0円）')}
+        ${av.t1.opts.filter(v => v > 0).map(v => opt(v, ST.t1PlanM, v.toLocaleString() + '円/月')).join('')}
+      </select>
+    </div>`;
+  }
+
+  // 第二種（有利子）：同じく月額の横に年額を表記する
+  const t2all = av.t2 ? av.t2.base.concat(av.t2.extra) : [];
+  if (t2all.length) {
+    fields += `<div class="fg">
+      <label>第二種（有利子）の月額</label>
+      <select id="t2-plan" onchange="setTaiyoPlan('t2', this.value)">
+        ${opt(0, ST.t2PlanM, '利用しない（0円）')}
+        ${t2all.map(v => opt(v, ST.t2PlanM, v.toLocaleString() + '円/月' + (av.t2.extra.includes(v) ? '（増額月額）' : ''))).join('')}
+      </select>
+    </div>`;
+  }
+
+  // 入学時特別増額（一時金）※初年度のみ申し込める制度のため、在学中（2年次以降）は表示しない。
+  // 第一種・第二種と同じく、区分判定の結果にかかわらずここで直接選べる（教育ローンの利用可否は別途の条件のため注記のみ表示）。
+  const ijEnrolled = ST.currentGrade && ST.currentGrade >= 2;
+  if (!ijEnrolled) {
+    fields += `<div class="fg">
+      <label>入学時特別増額（一時金・初年度のみ）</label>
+      <select id="ij-plan" onchange="setTaiyoPlan('ij', this.value)">
+        ${opt(0, ST.ichijikinPlanAmt, '利用しない（0円）')}
+        ${[100000, 200000, 300000, 400000, 500000].map(v => opt(v, ST.ichijikinPlanAmt, v.toLocaleString() + '円')).join('')}
+      </select>
+      ${ST.ichijikinPlanAmt > 0 ? `<div class="hazard-box" style="margin-top:8px">
+        <span class="hz-title">⚠ 対象条件をご確認ください</span>
+        日本政策金融公庫の「国の教育ローン」を申し込んで<span class="hz-em">利用できなかった方</span>が対象です。第一種または第二種と<span class="hz-em">併せて</span>申し込みます。
+      </div>` : ''}
+    </div>`;
+  }
+
+  if (!fields) return '';
+
+  const t1Annual = (ST.t1PlanM || 0) * 12;
+  const t2Annual = (ST.t2PlanM || 0) * 12;
+  const t1Total = t1Annual * r.nYears;
+  const t2Total = t2Annual * r.nYears;
+  const ij = ST.ichijikinPlanAmt || 0;
+  const monthly = (ST.t1PlanM || 0) + (ST.t2PlanM || 0);
+  const total = t1Total + t2Total + ij;
+  const heiyoWarn = (ST.taiyoElig === 'ichini' && ST.t1PlanM > 0 && ST.t2PlanM > 0)
+    ? `<div class="info-box" style="margin-top:10px;border-color:rgba(192,57,43,0.35);background:rgba(192,57,43,0.06)">⚠ 第一種と第二種は<strong>併用できません</strong>。どちらか一方を「利用しない」にしてください。</div>` : '';
+
+  // 貸与型は種類（第一種・第二種・一時金）ごとに分けて赤字で表示し、それぞれ返還が必要であることを明記する
+  const loanRow = (label, monthlyVal, annualVal, note) => `<div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:5px 0;border-bottom:1px dashed rgba(192,57,43,0.2)">
+    <span style="color:var(--ku-red)">${label}<br><span style="font-size:10px">${note}</span></span>
+    <strong style="color:var(--ku-red);text-align:right;flex-shrink:0">${monthlyVal !== null ? `${monthlyVal.toLocaleString()}円/月（年間 ${annualVal.toLocaleString()}円）` : `${annualVal.toLocaleString()}円`}</strong>
+  </div>`;
+
+  const summary = (monthly > 0 || ij > 0)
+    ? `<div style="margin-top:12px;border-top:1.5px solid rgba(192,57,43,0.25);padding-top:10px;font-size:12px;line-height:1.6">
+        <div style="font-weight:800;color:var(--ku-red);margin-bottom:4px">借入内訳（すべて返還が必要です）</div>
+        ${ST.t1PlanM > 0 ? loanRow('第一種奨学金（無利子）', ST.t1PlanM, t1Total, '卒業後に返還が必要（利子なし）') : ''}
+        ${ST.t2PlanM > 0 ? loanRow('第二種奨学金（有利子）', ST.t2PlanM, t2Total, '卒業後に利子を付けて返還が必要') : ''}
+        ${ij > 0 ? loanRow('入学時特別増額（一時金）', null, ij, '初年度のみ・有利子で卒業後に返還が必要') : ''}
+        <div style="display:flex;justify-content:space-between;align-items:baseline;font-size:14px;padding-top:8px"><span style="font-weight:700">卒業までの借入総額（要返還）</span><strong style="color:var(--ku-red);font-size:18px">${total.toLocaleString()}円</strong></div>
+      </div>`
+    : `<div class="info-box" style="margin-top:12px">金額を選ぶと、年次別グラフに<strong style="color:var(--ku-red)">赤色</strong>で積み上げて表示され、差引 自己資金からも差し引かれます。</div>`;
+
+  return `<div style="margin-top:14px;padding:12px;border:1.5px dashed rgba(192,57,43,0.35);border-radius:12px;background:rgba(192,57,43,0.03)">
+    <div style="font-size:13px;font-weight:800;color:var(--ku-red);margin-bottom:10px">借りる金額を入力する（試算・グラフに反映されます）</div>
+    ${fields}
+    ${heiyoWarn}
+    ${summary}
+    <div class="info-box" style="margin-top:10px">※ ここで入力した金額は<strong>借入</strong>です。差引 自己資金は減りますが、その分だけ<strong>卒業後に返還する金額が増えます</strong>。「利用しない（0円）」に戻せば計算からも外れます。</div>
+  </div>`;
+}
+
+// 「最高月額」の取扱いに関する注記
+function taiyoMaxNoteHtml(av) {
+  if (av.maxNote === 'cut') {
+    return `<div class="info-box" style="margin-top:10px">第一種の<strong>最高月額</strong>は、併用貸与の家計基準を満たす場合のみ選択できます。今回は併用基準に該当しないため、最高月額を除いた月額をご案内しています。</div>`;
+  }
+  if (av.maxNote === 'check') {
+    return `<div class="info-box" style="margin-top:10px;border-color:rgba(200,150,12,0.3);background:rgba(240,165,0,0.07)">⚠ この区分は併給調整後の月額が1つしか設定されていません。併用基準に該当しない方が選べる月額は、学校またはJASSOにご確認ください。</div>`;
+  }
+  return '';
+}
+
+function syncKyufuPreview() {
+  const box = byId('kyufu-preview');
+  if (!box) return;
+  const z = ST.kyufuZone;
+  if (!z) { box.innerHTML = ''; return; }
+  if (z === 'none') {
+    box.innerHTML = `<div class="info-box" style="margin-top:10px">給付型奨学金は受け取りません。</div>`;
+    return;
+  }
+  const commuteLabel = ST.commute === 'jitakugai' ? '自宅外通学' : '自宅通学';
+  if (z === 'IV' && !ST.tashi) {
+    box.innerHTML = `<div class="info-box" style="margin-top:10px;border-color:rgba(200,150,12,0.3);background:rgba(240,165,0,0.07)">
+      第Ⅳ区分（私立理工農系）：給付型奨学金は<strong>0円</strong>です。授業料等減免で「第Ⅳ区分（理工農系）」を選択してください。
+    </div>`;
+    return;
+  }
+  const m = kyufuMonthlyFor(z);
+  const label = z === 'IV' ? '第Ⅳ区分（多子世帯）' : (ST.tashi ? `${ZONE_LABEL[z]}（多子世帯）` : ZONE_LABEL[z]);
+  const specialNote = (ST.commute === 'jitaku' && ST.specialSupport)
+    ? `<br><span style="font-size:11px">※ 特例区分の特例額を適用しています。</span>`
+    : '';
+  box.innerHTML = `<div class="info-box green" style="margin-top:10px">    ${label}（${commuteLabel}）：月額 <strong>${m.toLocaleString()}円</strong> ／ 年間 <strong>${(m*12).toLocaleString()}円</strong>
+    ${specialNote}
+  </div>`;
+}
+
+function syncGenmenPreview() {
+  const picker = byId('genmen-zone-picker');
+  const tashiNote = byId('genmen-tashi-note');
+  if (!picker || !tashiNote) return;
+
+  if (ST.tashi) {
+    picker.style.display = 'none';
+    const t = currentTuition();
+    const amt = genmenAmountFor('many', t, 1);
+    tashiNote.style.display = 'block';
+    tashiNote.innerHTML = `<div class="info-box green">
+      多子世帯のため<strong>授業料等減免は満額</strong>：入学金 <strong>${amt.ny.toLocaleString()}円</strong> ／ 授業料 年間 <strong>${amt.jy.toLocaleString()}円</strong>
+    </div>`;
+    return;
+  }
+  picker.style.display = 'block';
+  tashiNote.style.display = 'none';
+
+  const box = byId('genmen-preview');
+  if (!box) return;
+  const z = ST.genmenZone;
+  if (!z) { box.innerHTML = ''; return; }
+  if (z === 'none') {
+    box.innerHTML = `<div class="info-box" style="margin-top:10px">授業料等減免は受けません。</div>` + zoneMismatchNote();
+    return;
+  }
+  const t = currentTuition();
+  const amt = genmenAmountFor(z, t, 1);
+  let warn = '';
+  if (z === 'IV' && t && !t.stem) {
+    warn = `<br><span style="font-size:11px;color:var(--ku-red);font-weight:700">⚠ 第Ⅳ区分は私立理工農系のみ対象です。</span>`;
+  }
+  box.innerHTML = `<div class="info-box green" style="margin-top:10px">
+    ${ZONE_LABEL[z]}：入学金 <strong>${amt.ny.toLocaleString()}円</strong> ／ 授業料 年間 <strong>${amt.jy.toLocaleString()}円</strong>${warn}
+  </div>` + zoneMismatchNote();
+}
+
+// 給付型と授業料等減免の区分が食い違う場合の警告（誤入力防止）
+function zoneMismatchNote() {
+  if (ST.tashi) return ''; // 多子世帯は所得に関わらず満額適用のため区分の食い違いを判定しない
+  if (uniRequiresNoGenmen()) return ''; // 給付奨学金Ｃ・医学生限定特待生制度により授業料等減免を意図的に対象外にしているため判定しない
+  const kz = ST.kyufuZone, gz = ST.genmenZone;
+  if (!kz || !gz) return '';
+  const base = ['I','II','III'];
+  let msg = '';
+  if (base.includes(kz) && base.includes(gz) && kz !== gz) {
+    msg = `給付型（${ZONE_LABEL[kz]}）と授業料等減免（${ZONE_LABEL[gz]}）の区分が異なります。通常は同じ区分になります。`;
+  } else if (base.includes(kz) && gz === 'none') {
+    msg = `給付型（${ZONE_LABEL[kz]}）を受給する場合、通常は授業料等減免も同じ区分で適用されます。`;
+  } else if (base.includes(kz) && gz === 'IV') {
+    msg = `給付型（${ZONE_LABEL[kz]}）を受給する場合、授業料等減免も通常は同じ区分になります（第Ⅳ区分は給付型なしの理工農系向け）。`;
+  } else if (kz === 'none' && base.includes(gz)) {
+    msg = `授業料等減免（${ZONE_LABEL[gz]}）の対象の方は、通常は給付型奨学金も同じ区分で受給できます。`;
+  }
+  if (!msg) return '';
+  return `<div class="info-box" style="margin-top:10px;border-color:rgba(200,150,12,0.3);background:rgba(240,165,0,0.07)">⚠ ${msg}区分判定ソフトの結果をご確認ください。</div>`;
+}
+
+function syncSupportUI() {
+  updateKyufuIVAvailability();
+  updateGenmenZoneAvailability();
+  updateIchijikinAvailability();
+  syncTaiyoPreview();
+  syncKyufuPreview();
+  syncGenmenPreview();
+}
+
+// 入学時特別増額貸与奨学金は「初年度」にしか申し込めないため、
+// STEP2で「在学中（2年次以降）」を選択している場合はSTEP6の選択欄自体を表示しない。
+// ここでは、在学中に切り替わった際に選択済みの希望額をリセットするだけでよい
+// （STEP6の表示はbuildTaiyoInputで都度組み立て直すため、DOM操作は不要）。
+function updateIchijikinAvailability() {
+  const isEnrolled = ST.currentGrade && ST.currentGrade >= 2;
+  if (isEnrolled && ST.ichijikinPlanAmt) {
+    ST.ichijikinPlanAmt = 0;
+  }
+}
+
+function goSupportNext() {
+  let ok = true;
+  if (!ST.kyufuZone) { byId('err-kz').style.display = 'block'; ok = false; }
+  if (!ST.tashi && !ST.genmenZone) { byId('err-gz').style.display = 'block'; ok = false; }
+  if (!ST.taiyoElig) { byId('err-te').style.display = 'block'; ok = false; }
+  if (!ok) { toast('⚠ 未入力の項目があります'); return; }
+  goStep(4, true);
+}
+
+// ─── STEP 4: 学校独自の奨学金 ───
+function goS4Next() {
+  if (!ST.uniChoice) {
+    byId('err-uni').style.display = 'block';
+    toast('⚠ 独自奨学金の利用有無を選択してください');
+    return;
+  }
+  goStep(5, true);
+}
+
+// ─── STEP 5: 生活費・仕送り・アルバイト ───
+// JASSO「学生生活調査」の平均額を初期値に使う（自宅：年間約36万円＝月3.5万円／自宅外：年間約120万円＝月10万円）
+const LIVING_DEFAULT = { jitaku: 0, jitakugai: 100000 };
+
+function setLivingOn(on, btn) {
+  ST.livingOn = on;
+  document.querySelectorAll('#lv-no, #lv-yes').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+  byId('lv-block').style.display = on ? 'block' : 'none';
+  // 「含める」を選んだときは、STEP6の比較パネルも既定で生活費込みの表示にそろえる
+  ST.compareIncludeLiving = on;
+  if (on) syncLivingDefault();
+}
+
+// STEP6の比較パネル：学費のみ／生活費を含める の切り替え
+function setCompareLiving(val) {
+  ST.compareIncludeLiving = val;
+  calcResult();
+}
+
+// STEP3の通学形態（自宅／自宅外）に応じて、生活費の初期値を入れ直す。
+// ユーザーがすでに金額を手動編集している場合は上書きしない。
+function syncLivingDefault() {
+  if (ST.livingCustomized) return;
+  ST.livingM = LIVING_DEFAULT[ST.commute === 'jitakugai' ? 'jitakugai' : 'jitaku'];
+  const input = byId('lv-amount');
+  if (input) input.value = ST.livingM;
+}
+
+function onLivingInput() {
+  ST.livingM = getNum('lv-amount', 0);
+  ST.livingCustomized = true;
+}
+
+// ── 仕送り・アルバイトの金額プルダウン（1万円単位） ──
+// スマートフォンでの利用を想定し、手入力ではなくプルダウンで選ぶ方式にしている。
+// 選択肢には年間の金額も併記する（アルバイトは「年収の壁」の判定が年額ベースのため、
+// 仕送りは4年間・6年間の累計が大きくなるため）。
+//
+// ラベルは意図的に短くしている。iOS・Androidのプルダウンは表示幅が固定で、
+// 長いラベルは2行に折り返されてしまい、1行の項目と2行の項目が混在して読みにくくなる。
+// 「/月」は入力欄のラベル（仕送り月額・アルバイト月額）で分かるため省き、
+// 「年間」も「年」に縮めている。
+const INCOME_STEP = 10000;      // 1万円単位
+const SHIOKURI_MAX = 300000;    // 仕送りの上限：月30万円（医学部など6年制・自宅外を想定）
+const BAITO_MAX = 200000;       // アルバイトの上限：月20万円（年収240万円相当）
+const CUSTOM_VALUE = 'custom';  // プルダウン末尾の「上記以外の金額を入力する」
+
+function buildIncomeOptions(selectId, max) {
+  const sel = byId(selectId);
+  if (!sel) return;
+  let html = '<option value="">選択してください</option>';
+  for (let v = 0; v <= max; v += INCOME_STEP) {
+    const label = v === 0
+      ? '0円（なし）'
+      : `${(v / 10000)}万円（年${(v * 12 / 10000)}万円）`;
+    html += `<option value="${v}">${label}</option>`;
+  }
+  // 一覧にない金額（1万円未満の端数や上限超え）にも対応できるよう、最後に直接入力を用意する
+  html += `<option value="${CUSTOM_VALUE}">＋ 上記以外の金額を入力する</option>`;
+  sel.innerHTML = html;
+}
+
+// プルダウンで「上記以外の金額を入力する」が選ばれているかどうかで、入力欄の表示を切り替える
+function toggleCustomInput(selectId, wrapId, inputId) {
+  const sel = byId(selectId), wrap = byId(wrapId), inp = byId(inputId);
+  const isCustom = !!sel && sel.value === CUSTOM_VALUE;
+  if (wrap) wrap.style.display = isCustom ? 'flex' : 'none';
+  if (!isCustom && inp) inp.value = '';
+  if (isCustom && inp) setTimeout(() => inp.focus(), 0);
+  return isCustom;
+}
+
+function setShiokuri(on, btn) {
+  ST.shiokuriOn = on;
+  if (!on) {
+    ST.shiokuriM = 0;
+    const sel = byId('sk-amount'); if (sel) sel.value = '';
+    toggleCustomInput('sk-amount', 'sk-custom-wrap', 'sk-custom');
+    syncShiokuriAnnual();
+  }
+  document.querySelectorAll('#sk-no, #sk-yes').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+  byId('sk-block').style.display = on ? 'block' : 'none';
+}
+
+function onShiokuriChange() {
+  const isCustom = toggleCustomInput('sk-amount', 'sk-custom-wrap', 'sk-custom');
+  ST.shiokuriM = isCustom ? getNum('sk-custom', 0) : getNum('sk-amount', 0);
+  syncShiokuriAnnual();
+}
+
+function onShiokuriCustomInput() {
+  ST.shiokuriM = getNum('sk-custom', 0);
+  syncShiokuriAnnual();
+}
+
+// 選んだ仕送り額を、月額と年額の両方で改めて表示する。
+// プルダウンのラベルを短くしたぶん、選んだあとにここで確かめられるようにしている。
+// （アルバイトは「年収の壁」の警告欄が同じ役割を果たしているため、こちらには付けていない）
+function syncShiokuriAnnual() {
+  const box = byId('sk-annual');
+  if (!box) return;
+  if (!ST.shiokuriOn || !ST.shiokuriM || ST.shiokuriM <= 0) { box.innerHTML = ''; return; }
+  const annual = Math.round(ST.shiokuriM) * 12;
+  box.innerHTML = `選択中：月 <strong>${ST.shiokuriM.toLocaleString()}円</strong>
+    ／ 年間 <strong>${annual.toLocaleString()}円</strong>`;
+}
+
+function setBaito(on, btn) {
+  ST.baitoOn = on;
+  if (!on) {
+    ST.baitoM = 0;
+    const sel = byId('bt-amount'); if (sel) sel.value = '';
+    toggleCustomInput('bt-amount', 'bt-custom-wrap', 'bt-custom');
+  }
+  document.querySelectorAll('#bt-no, #bt-yes').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+  byId('bt-block').style.display = on ? 'block' : 'none';
+  syncBaitoWarn();
+}
+
+function onBaitoInput() {
+  const isCustom = toggleCustomInput('bt-amount', 'bt-custom-wrap', 'bt-custom');
+  ST.baitoM = isCustom ? getNum('bt-custom', 0) : getNum('bt-amount', 0);
+  syncBaitoWarn();
+}
+
+function onBaitoCustomInput() {
+  ST.baitoM = getNum('bt-custom', 0);
+  syncBaitoWarn();
+}
+
+// アルバイト収入に関する税・扶養の注意喚起。
+// 判定に使う主なライン（給与収入ベースの目安）
+//   約110万円：住民税（均等割）が課税されはじめる目安（自治体により異なる）
+//   134万円　：勤労学生控除（住民税26万円）を申告した場合に住民税の所得割が0円となる上限の目安
+//   150万円　：19歳以上23歳未満は親の健康保険の扶養に留まれる上限（2025年10月から130万→150万）
+//   123万円／160万円：多子世帯の「扶養する子供」としてカウントされる年収の上限（JASSO資料より）
+//              19歳以上23歳未満は160万円以下、それ以外（19歳未満・23歳以上）は123万円以下。
+//              令和8年10月分の判定から適用（令和7年1〜12月の収入に基づく）
+const BAITO_LINES = { jyuminzei: 1100000, kinrou: 1340000, shakaihoken: 1500000, fuyouU19o23: 1230000, fuyou19to23: 1600000 };
+
+function syncBaitoWarn() {
+  const box = byId('bt-warn');
+  if (!box) return;
+  if (!ST.baitoOn || !ST.baitoM || ST.baitoM <= 0) { box.innerHTML = ''; return; }
+
+  const annual = Math.round(ST.baitoM) * 12;
+  const man = v => (v / 10000).toFixed(0) + '万円';
+
+  // 信号機：青＝110万円以内 ／ 黄＝110万円超160万円以内 ／ 赤＝160万円超（年齢によらず対象外）
+  let signal = 'blue';
+  if (annual > BAITO_LINES.fuyou19to23) signal = 'red';
+  else if (annual > BAITO_LINES.jyuminzei) signal = 'yellow';
+  const SIGNAL_LABEL = { blue: '安全圏', yellow: '注意', red: '影響あり' };
+  function trafficLightHtml(active) {
+    const dot = (color, on) => `<span style="display:inline-block;width:13px;height:13px;border-radius:50%;margin:0 2px;
+      background:${on ? color : '#3a3a3a'};box-shadow:${on ? '0 0 6px ' + color + ', 0 0 2px ' + color : 'none'};
+      border:1px solid rgba(255,255,255,0.15)"></span>`;
+    return `<span style="display:inline-flex;align-items:center;background:#181818;border-radius:20px;padding:4px 9px;vertical-align:middle;margin-left:8px">
+      ${dot('#2ECC71', active === 'blue')}${dot('#FFD500', active === 'yellow')}${dot('#E74C3C', active === 'red')}
+      <span style="color:#fff;font-size:10px;font-weight:800;margin-left:6px;white-space:nowrap">${SIGNAL_LABEL[active]}</span>
+    </span>`;
+  }
+
+  // 4本のラインを短い一覧で見せる（年収・超えたら何が起きるか、だけ。超えている場合は赤文字）
+  const check = v => annual > v
+    ? '<span class="bt-check bt-over">⚠ 超</span>'
+    : '<span class="bt-check">○</span>';
+  const rows = [
+    ['110万円', '住民税がかかりはじめる → 給付区分に影響', BAITO_LINES.jyuminzei],
+    ['123万円', '扶養から外れる（19歳未満・23歳以上）／多子世帯の対象から外れる', BAITO_LINES.fuyouU19o23],
+    ['134万円', '勤労学生控除の上限（申告で110万円→ここまで住民税0円）', BAITO_LINES.kinrou],
+    ['160万円', '扶養から外れる（19〜22歳）／多子世帯の対象から外れる', BAITO_LINES.fuyou19to23]
+  ];
+  const lines = rows.map(([label, desc, v]) =>
+    `<div class="bt-line">${check(v)}<strong>${label}</strong>：${desc}</div>`
+  ).join('');
+
+  box.innerHTML = `<div class="hazard-box" style="margin-top:12px">
+    <span class="hz-title">⚠ アルバイト収入は「年収の壁」にご注意ください${trafficLightHtml(signal)}</span>
+    <div style="margin:6px 0 8px">入力：月${ST.baitoM.toLocaleString()}円（年収 約${man(annual)}）</div>
+    <div class="bt-lines">${lines}</div>
+    <div class="bt-parent-note">※ 134万円までは学生本人が非課税でも、<strong>親の扶養控除は123万円で先に減りはじめます</strong>。本人の非課税と親の控除は別の壁です。</div>
+    <div class="hz-foot">※ 給与収入（アルバイト等）の基準です。フードデリバリー等の個人事業主は、事業所得95万円以下が基準になります。判定は前年1〜12月の収入。詳しくは在学校・JASSOにご確認ください。</div>
+  </div>`;
+}
+
+// ─── STEP 6: 結果画面のトグル（給付奨学金 / 貸与奨学金） ───
+function toggleResultOption(which) {
+  if (which === 'kyufu') {
+    if (!SHOW_KYUFU_TOGGLE) return; // 給付奨学金は常時ON固定のため、トグル非表示中は操作しない
+    ST.useKyufu = !ST.useKyufu;
+  }
+  if (which === 'taiyo') ST.useTaiyo = !ST.useTaiyo;
+  calcResult();
+}
+
+// ─── STEP 6: 借りる金額（第一種・第二種の月額／入学時特別増額）の選択 ───
+function setTaiyoPlan(which, val) {
+  const v = Number(val) || 0;
+  if (which === 't1') {
+    ST.t1PlanM = v;
+    // 「第一種または第二種（併用不可）」の判定のときは、もう一方を自動的に0円へ戻す
+    if (v > 0 && ST.taiyoElig === 'ichini' && ST.t2PlanM > 0) {
+      ST.t2PlanM = 0;
+      toast('第一種と第二種は併用できないため、第二種を「利用しない」に戻しました');
+    }
+  }
+  if (which === 't2') {
+    ST.t2PlanM = v;
+    if (v > 0 && ST.taiyoElig === 'ichini' && ST.t1PlanM > 0) {
+      ST.t1PlanM = 0;
+      toast('第一種と第二種は併用できないため、第一種を「利用しない」に戻しました');
+    }
+  }
+  if (which === 'ij') ST.ichijikinPlanAmt = v;
+  calcResult();
+}
+
+// ─── CALCULATION（入力された区分・支援内容から算出） ───
+// STEP3の入力を戻って変えた後など、選択中の貸与希望額（第一種・第二種・一時金）が
+// 現在の選択肢に存在しない場合は「利用しない」へ戻す。試算(computeAll)・案内カードの両方から呼ぶ。
+function syncTaiyoPlanValidity() {
+  const av = taiyoAvailability();
+  if (av.t1) {
+    if (ST.t1PlanM !== 0 && !av.t1.opts.includes(ST.t1PlanM)) ST.t1PlanM = 0;
+  } else {
+    ST.t1PlanM = 0;
+  }
+  const t2AllOpts = av.t2 ? av.t2.base.concat(av.t2.extra) : [];
+  if (ST.t2PlanM !== 0 && !t2AllOpts.includes(ST.t2PlanM)) ST.t2PlanM = 0;
+  const ijEnrolled = ST.currentGrade && ST.currentGrade >= 2;
+  if (ijEnrolled) ST.ichijikinPlanAmt = 0;
+  else if (ST.ichijikinPlanAmt !== 0 && ![100000, 200000, 300000, 400000, 500000].includes(ST.ichijikinPlanAmt)) ST.ichijikinPlanAmt = 0;
+  return av;
+}
+
+function computeAll() {
+  syncTaiyoPlanValidity();
+  const facInfo = MU_FAC_MAP[ST.faculty];
+  const tuition = MU_TUITION[facInfo.group];
+  const isStem = tuition.stem;
+
+  const nYears = tuition.years;
+  const yearsArr = Array.from({ length: nYears }, (_, i) => i + 1);
+
+  // 授業料等減免（多子世帯の場合は所得区分に関わらず満額を適用）
+  const gz = ST.tashi ? 'many' : (ST.genmenZone === 'none' ? null : ST.genmenZone);
+  const genmenRow = gz ? GENMEN_TABLE[gz] : null;
+  const blockY1 = uniBlocksGenmenYear1(); // 給付奨学金Ｃ：初年度だけ授業料等減免と併用不可
+  const reductionAdmission = (gz && !blockY1) ? genmenAmountFor(gz, tuition, 1).ny : 0;
+  const redTuitionY = yearsArr.map(y => (gz && !(blockY1 && y === 1)) ? genmenAmountFor(gz, tuition, y).jy : 0);
+
+  // 給付型奨学金（第Ⅳ区分は多子世帯の場合のみ支給あり。理工農系の場合は0円）
+  const kz = ST.kyufuZone === 'none' ? null : ST.kyufuZone;
+  const kyufuM = kz ? (kz === 'IV' ? (ST.tashi ? kyufuMonthlyFor('IV') : 0) : kyufuMonthlyFor(kz)) : 0;
+  const kyufuAnnual = kyufuM * 12;
+
+  // 年次別：学費（入学金・諸費込み）
+  const feeY = yearsArr.map(y => getYearTotal(tuition, y));
+  const grossY = feeY.map((v, i) => v + (i === 0 ? tuition.admissionFee : 0));
+
+  // 大学独自奨学金
+  const uniOpt = (ST.uniChoice && ST.uniChoice !== 'none') ? UNI_OPTIONS[ST.uniChoice] : null;
+  let uniAmount = 0, uniName = '', uniScope = 'all', uniY;
+  if (uniOpt && uniOpt.scope === 'national') {
+    // 医学生限定特待生制度：学費（入学金・諸費込み）を国立大学の標準額まで年次ごとに減免
+    uniY = grossY.map((v, i) => {
+      const natCost = NATIONAL_STANDARD.tuitionYear + (i === 0 ? NATIONAL_STANDARD.admissionFee : 0);
+      return Math.max(0, v - natCost);
+    });
+    uniName = uniOpt.name;
+    uniScope = 'national';
+    uniAmount = uniY[0];
+  } else if (uniOpt && uniOpt.jassoPriority) {
+    // 給付奨学金Ｂ：年間50万円を「授業料」に充当する制度。
+    // ただし国の授業料等減免が優先されるため、減免された分だけ独自奨学金の枠が減る。
+    //   例）授業料等減免が233,400円（第Ⅲ区分）→ 500,000 − 233,400 ＝ 266,600円が独自奨学金の給付額
+    //   例）授業料が全額（700,000円）減免される場合 → 500,000 − 700,000 ＜ 0 のため独自奨学金は使えない
+    // なお授業料の残額を超えて給付されることはない（授業料以外には充当しない）。
+    uniName = uniOpt.name;
+    uniScope = uniOpt.scope;
+    uniY = yearsArr.map((y, i) => {
+      const tuitionRemain = Math.max(0, tuitionOfYear(tuition, y) - redTuitionY[i]);
+      return Math.max(0, Math.min(uniOpt.amount - redTuitionY[i], tuitionRemain));
+    });
+    uniAmount = uniY[0];
+  } else if (uniOpt) {
+    uniAmount = uniOpt.amount;
+    uniName = uniOpt.name;
+    uniScope = uniOpt.scope;
+    uniY = yearsArr.map(y => uniAmount > 0 ? (uniScope === 'y1' ? (y === 1 ? uniAmount : 0) : uniAmount) : 0);
+  } else {
+    uniY = yearsArr.map(() => 0);
+  }
+
+  // 貸与型
+  // STEP6で選んだ希望額（第一種・第二種の月額／一時金）を試算・グラフに反映する。
+  // 0円（未選択）のままなら、これまでどおり金額には一切影響しない。
+  const taiyoMonthly = REFLECT_TAIYO_IN_CALC ? ((ST.t1PlanM || 0) + (ST.t2PlanM || 0)) : 0;
+  const ichijikinAmount = REFLECT_TAIYO_IN_CALC ? (ST.ichijikinPlanAmt || 0) : 0;
+  const taiyoAnnual = taiyoMonthly * 12;
+  const taiyoTotal4 = taiyoAnnual * nYears;
+  const borrowTotal = taiyoTotal4 + ichijikinAmount;
+
+  // 減免適用後
+  const afterRedY = grossY.map((v, i) => v - redTuitionY[i] - (i === 0 ? reductionAdmission : 0));
+  // 減免＋給付＋独自適用後（マイナスは0に切り上げ）
+  const clamped = [];
+  const afterFullY = afterRedY.map((v, i) => {
+    const raw = v - kyufuAnnual - uniY[i];
+    if (raw < 0) clamped.push(i + 1);
+    return Math.max(0, raw);
+  });
+
+  const showFull = ST.useKyufu;
+  // 実質負担（給付ONなら給付も差引。独自奨学金は常に差引）
+  const burdenY = showFull ? afterFullY
+    : afterRedY.map((v, i) => Math.max(0, v - uniY[i]));
+
+  // 貸与型・一時金（月額・一時金のどちらかを選んでいる場合に自己資金の補填へ充当）
+  const useTaiyo = REFLECT_TAIYO_IN_CALC && (taiyoMonthly > 0 || ichijikinAmount > 0);
+  const taiyoCoverAnnual = useTaiyo ? taiyoAnnual : 0;
+  const ichijikinApplied = useTaiyo ? ichijikinAmount : 0;
+  const coverY = burdenY.map((v, i) => Math.min(v, taiyoCoverAnnual + (i === 0 ? ichijikinApplied : 0)));
+
+  // 生活費（学費とは別に、自宅／自宅外に応じてかかる生活費の目安）。
+  // 給付型・独自奨学金の余り（学費を上回った分）は、実際には手元に残る現金なので生活費にも充てられる。
+  // そのため、学費側を0円で打ち止めにする前の「素の差額」に生活費を足したうえで、最後に一度だけ0円未満を切り上げる。
+  const rawNetY = afterRedY.map((v, i) => v - (showFull ? kyufuAnnual : 0) - uniY[i]);
+  const livingAnnual = ST.livingOn ? Math.round(ST.livingM) * 12 : 0;
+  const livingY = yearsArr.map(() => livingAnnual);
+  const needY = rawNetY.map((v, i) => Math.max(0, v + livingY[i])); // 実質負担相当（学費）＋生活費 ＝ 実際に用意する必要がある金額
+  const selfBeforeIncomeY = needY.map((v, i) => Math.max(0, v - taiyoCoverAnnual - (i === 0 ? ichijikinApplied : 0)));
+
+  // 仕送り・アルバイト（任意入力。「利用しない」の場合は0円のため、従来通りの計算結果になる）
+  const shiokuriAnnual = ST.shiokuriOn ? Math.round(ST.shiokuriM) * 12 : 0;
+  const baitoAnnual = ST.baitoOn ? Math.round(ST.baitoM) * 12 : 0;
+  const incomeAnnual = shiokuriAnnual + baitoAnnual;
+  const incomeY = yearsArr.map(() => incomeAnnual);
+  const selfY = selfBeforeIncomeY.map((v, i) => Math.max(0, v - incomeY[i]));
+
+  const sum = a => a.reduce((x, y) => x + y, 0);
+
+  // 現在の学年（在学中の場合）に応じて、表示・合計に使う年次を「残り期間」に絞る。
+  // ※ 年次ごとの配列(grossY等)自体は1年次からすべて計算済みのまま変更しない。
+  //   1年次にしか発生しない入学金・入学時特別増額は、visibleYearsに1年次が含まれない
+  //   （＝在学中）場合は自動的に集計対象から外れる。
+  const startYear = (ST.currentGrade && ST.currentGrade >= 2) ? ST.currentGrade : 1;
+  const visibleYears = yearsArr.filter(y => y >= startYear);
+  const sumVisible = arr => visibleYears.reduce((s, y) => s + arr[y - 1], 0);
+
+  const noSup4y = sumVisible(grossY);
+  const withRed4y = sumVisible(afterRedY);
+  const withFull4y = sumVisible(afterFullY);
+  const burden4y = sumVisible(burdenY);
+  const livingTotal4 = sumVisible(livingY);
+  const need4y = sumVisible(needY);
+  const selfBeforeIncome4y = sumVisible(selfBeforeIncomeY);
+  const self4y = sumVisible(selfY);
+  const incomeTotal4 = sumVisible(incomeY);
+
+  const genmenTotal4 = sumVisible(redTuitionY) + (startYear === 1 ? reductionAdmission : 0);
+  // 給付型奨学金は累計総額を出さない方針のため、年間額(kyufuAnnual)のみを使用する
+  const uniTotal4 = sumVisible(uniY);
+
+  // 貸与型・一時金（年次別テーブル用。表示中の残り期間分のみの内訳合計。
+  // ※ 卒業までの満期借入総額(borrowTotal)は在学状況に関わらず全期間で別途算出済み）
+  const taiyoScheduleY = yearsArr.map((y, i) => taiyoCoverAnnual + (i === 0 ? ichijikinApplied : 0));
+  const taiyoScheduleTotalVisible = sumVisible(taiyoScheduleY);
+
+  return {
+    facInfo, tuition, isStem, nYears, yearsArr, startYear, visibleYears,
+    kz, gz, kyufuM, kyufuAnnual,
+    genmenRow, reductionAdmission, redTuitionY, genmenTotal4,
+    uniAmount, uniName, uniScope, uniY, uniTotal4,
+    uniJassoPriority: !!(uniOpt && uniOpt.jassoPriority),
+    uniBaseAmount: (uniOpt && uniOpt.amount) ? uniOpt.amount : 0,
+    taiyoMonthly, taiyoAnnual, taiyoTotal4, borrowTotal,
+    useTaiyo, taiyoCoverAnnual, ichijikinApplied, taiyoScheduleTotalVisible,
+    shiokuriAnnual, baitoAnnual, incomeAnnual, incomeY, incomeTotal4,
+    livingAnnual, livingY, livingTotal4, needY, need4y, rawNetY,
+    feeY, grossY, afterRedY, afterFullY, burdenY, coverY, selfBeforeIncomeY, selfBeforeIncome4y, selfY, clamped,
+    noSup4y, withRed4y, withFull4y, burden4y, self4y,
+    savingRed: noSup4y - withRed4y,
+    savingFull: noSup4y - withFull4y,
+    showFull
+  };
+}
+
+// ─── 計算式（検証用）：このソフトが実際に使っている計算式を、1年次の数値をあてはめて表示する ───
+// ユーザー自身の検証用途。折りたたみ式にして、通常の閲覧では邪魔にならないようにする。
+function verificationFormulaCardHtml(r) {
+  const t = r.tuition;
+  const y1 = 0; // 配列インデックス（1年次）
+  const yen = v => v.toLocaleString() + '円';
+  const row = (label, formula) => `<div style="margin-bottom:10px">
+    <div style="font-size:12px;color:var(--text-2);margin-bottom:2px">${label}</div>
+    <div style="font-family:ui-monospace,'Courier New',monospace;font-size:12px;background:rgba(216,231,221,0.35);border-radius:8px;padding:8px 10px;line-height:1.7;white-space:pre-wrap;word-break:break-all">${formula}</div>
+  </div>`;
+
+  let html = '';
+
+  // ① 学費（1年次）
+  const feeSum1 = t.fees.reduce((s, f) => s + f.y[0], 0);
+  html += row('① 学費（1年次・入学金込み）',
+    `入学金 ${yen(t.admissionFee)} + 授業料 ${yen(t.tuitionY[0])} + 諸費 ${yen(feeSum1)}\n= ${yen(r.grossY[y1])}`);
+
+  // ② 授業料等減免
+  if (r.gz) {
+    const capNy = GENMEN_TABLE.I.ny, capJy = GENMEN_TABLE.I.jy;
+    const ratio = GENMEN_RATIO[r.gz];
+    const ratioLabel = ratio === 1 ? '1（満額）' : (ratio === 2/3 ? '2/3' : (ratio === 1/3 ? '1/3' : ratio));
+    const baseNy = Math.min(t.admissionFee, capNy);
+    const baseJy1 = Math.min(tuitionOfYear(t, 1), capJy);
+    const blockY1 = uniBlocksGenmenYear1();
+    html += row(`② 授業料等減免（${r.gz === 'many' ? '多子世帯' : ZONE_LABEL[r.gz]}・割合${ratioLabel}）`,
+      `【上限額】入学金 min(${yen(t.admissionFee)}, 国の上限${yen(capNy)}) = ${yen(baseNy)}\n` +
+      `授業料 min(${yen(tuitionOfYear(t, 1))}, 国の上限${yen(capJy)}) = ${yen(baseJy1)}\n` +
+      `【本来の減免額】入学金：${yen(baseNy)} × ${ratioLabel} → 10円未満切り上げ100円単位 = ${yen(roundUp100(baseNy * ratio))}\n` +
+      `授業料（1年次）：${yen(baseJy1)} × ${ratioLabel} → 同様に切り上げ = ${yen(roundUp100(baseJy1 * ratio))}` +
+      (blockY1 ? `\n【1年次に適用される額】${r.uniName}と併用不可のため 0円（2年次以降は本来の計算どおり適用）` : ''));
+  } else {
+    html += row('② 授業料等減免', '対象外のため 0円');
+  }
+
+  // ③ 給付型奨学金
+  if (r.kz) {
+    const commuteLabel = ST.commute === 'jitakugai' ? '自宅外通学' : '自宅通学';
+    const specialLabel = (ST.commute === 'jitaku' && ST.specialSupport) ? '（特例区分の特例額）' : '';
+    html += row(`③ 給付型奨学金（${r.kz === 'IV' ? '第Ⅳ区分（多子世帯）' : (ST.tashi ? ZONE_LABEL[r.kz] + '（多子世帯）' : ZONE_LABEL[r.kz])}・${commuteLabel}）`,
+      `月額 ${yen(r.kyufuM)}${specialLabel} × 12か月 = 年間 ${yen(r.kyufuAnnual)}${r.showFull ? '' : '\n（現在「給付型奨学金」トグルOFFのため、下の実質負担には含まれていません）'}`);
+  } else {
+    html += row('③ 給付型奨学金', '対象外のため 0円');
+  }
+
+  // ④ 独自奨学金
+  if (r.uniJassoPriority) {
+    const remain = Math.max(0, tuitionOfYear(t, 1) - r.redTuitionY[y1]);
+    html += row(`④ 学校独自の奨学金（${r.uniName}）`,
+      `【JASSOの授業料等減免が優先】\n` +
+      `年間上限 ${yen(r.uniBaseAmount)} − 授業料等減免 ${yen(r.redTuitionY[y1])} = ${yen(Math.max(0, r.uniBaseAmount - r.redTuitionY[y1]))}\n` +
+      `授業料の残額 ${yen(remain)} を上限として ${yen(r.uniY[y1])}` +
+      (r.uniY[y1] === 0 ? '\n（授業料が減免で賄われるため、この奨学金は利用できません）' : ''));
+  } else if (r.uniAmount > 0) {
+    html += row(`④ 学校独自の奨学金（${r.uniName}）`,
+      `年額 ${yen(r.uniY[y1])}${r.uniScope === 'y1' ? '（初年度のみ）' : ''}`);
+  } else {
+    html += row('④ 学校独自の奨学金', '利用しないため 0円');
+  }
+
+  // ⑤ 実質負担（1年次）
+  const kyufuUsed = r.showFull ? r.kyufuAnnual : 0;
+  html += row('⑤ 実質負担（1年次）',
+    `学費 ${yen(r.grossY[y1])} − 授業料等減免 ${yen(r.redTuitionY[y1] + r.reductionAdmission)} − 給付型 ${yen(kyufuUsed)} − 独自奨学金 ${yen(r.uniY[y1])}\n（マイナスは0円に切り上げ）= ${yen(r.burdenY[y1])}`);
+
+  // ⑥ 生活費（1年次）
+  html += row('⑥ 生活費（1年次）',
+    ST.livingOn ? `月額 ${yen(ST.livingM)} × 12か月 = 年間 ${yen(r.livingAnnual)}（学費とは別に加算）` : '「含めない」を選択しているため 0円');
+
+  // ⑦ 差引自己資金（1年次）
+  const spillover = r.burdenY[y1] - r.rawNetY[y1]; // 学費側で切り上げずに残していたら生活費に回せた分（0なら発生なし）
+  const taiyoY1 = r.taiyoCoverAnnual + r.ichijikinApplied; // 1年次に充当される貸与型・一時金（STEP6で金額を選んだ場合のみ）
+  html += row('⑦ 差引 自己資金（1年次）',
+    (spillover > 0
+      ? `実質負担 ${yen(r.burdenY[y1])} は学費だけで見て0円に切り上げた金額ですが、給付型・独自奨学金には${yen(spillover)}分の余りがあり、これは生活費にも充てられます。\n` +
+        `生活費 ${yen(r.livingY[y1])} − 余り ${yen(spillover)} − 貸与型充当 ${yen(taiyoY1)}${taiyoY1 > 0 ? '（要返還）' : '（試算に含めていません）'} − 仕送り・バイト収入 ${yen(r.incomeY[y1])}\n（マイナスは0円に切り上げ）= ${yen(r.selfY[y1])}`
+      : `実質負担 ${yen(r.burdenY[y1])} ＋ 生活費 ${yen(r.livingY[y1])} − 貸与型充当 ${yen(taiyoY1)}${taiyoY1 > 0 ? '（要返還）' : '（試算に含めていません）'} − 仕送り・バイト収入 ${yen(r.incomeY[y1])}\n（マイナスは0円に切り上げ）= ${yen(r.selfY[y1])}`));
+
+  return `<details class="card fee-detail">
+    <summary class="card-title fee-detail-summary">計算式（検証用）<span class="fee-detail-caret"></span></summary>
+    <div class="info-box" style="margin-top:0;margin-bottom:12px">この欄は検証用に、上の試算で実際に使っている計算式へ1年次の数値をあてはめて表示しています。2年次以降も同じ式で年次ごとの学納金・減免額を計算しています。</div>
+    ${html}
+  </details>`;
+}
+
+// ─── 棒グラフ：年次別「学費全体｜実質負担（内訳積み上げ）」 ───
+// グラフ・内訳カードで共通して使う色パレット（凡例と色を完全に一致させるため一箇所にまとめる）
+const CHART_COLORS = {
+  gross: '#C7D2CC',      // 学費全体（ニュートラルグレー）
+  genmen: '#29B6E8',     // 授業料等減免（水色）※お手元の資料に合わせた配色
+  kyufu: '#F5A623',      // 給付型（オレンジ）※お手元の資料に合わせた配色
+  uni: '#8B5CF6',        // 独自奨学金（紫。水色・オレンジと重ならない色）
+  income: '#E85D9C',     // 仕送り・アルバイト収入（ピンク。水色・オレンジ・紫と重ならない色）
+  taiyo: 'var(--ku-red)', // 貸与型・一時金（要返還であることが分かるよう赤系にする）
+  living: '#7F94A3'      // 生活費（学費グレーの上に積む。支援側の色と重ならない濃いスレート系）
+};
+
+function buildYearlyChart(r, showFull, periodLabel, includeLiving) {
+  const years = r.visibleYears;
+  if (!years.length) return '';
+
+  // 各年次の内訳を組み立てる
+  // 支援（減免・給付・独自）は、学費を上限に切り詰めず実額のまま積み上げる。
+  // 支援の合計が学費を上回る場合は、その分だけグラフが学費の棒より高く突き抜ける。
+  const rows = years.map(y => {
+    const i = y - 1;
+    const gross = r.grossY[i];
+    const genmen = r.redTuitionY[i] + (i === 0 ? r.reductionAdmission : 0);
+    const kyufu = showFull ? r.kyufuAnnual : 0;
+    const uni = r.uniY[i];
+    const income = r.incomeAnnual; // 仕送り・アルバイト収入（STEP5で「利用しない」なら0円）
+    const taiyo = r.taiyoCoverAnnual + (i === 0 ? r.ichijikinApplied : 0); // 貸与型・一時金（STEP6で希望額を選んだ場合のみ）
+    const living = includeLiving ? r.livingY[i] : 0; // 生活費（STEP5で「含めない」、またはSTEP6で「学費のみ」を選んでいる場合は0円）
+    const need = gross + living; // 左の棒＝実際に必要になるお金（学費＋生活費）
+    const overflow = Math.max(0, (genmen + uni + kyufu + income + taiyo) - need); // 支援＋収入＋貸与の合計が必要額を超えた分
+    const shortage = Math.max(0, need - (genmen + uni + kyufu + income + taiyo)); // 支援＋収入＋貸与の合計が必要額に届かない分
+
+    return { y, gross, living, need, genmen, kyufu, uni, income, taiyo, overflow, shortage };
+  });
+  const anyLiving = rows.some(d => d.living > 0);
+
+  // 軸の基準値は「学費全体」と「支援＋収入＋貸与の合計」の両方の最大値から決める。
+  // こうすることで、支援＋収入＋貸与が学費を上回るケースでもグラフが自動的に伸びて、
+  // その年のバーだけが突き出て見えるようになる。
+  const maxVal = Math.max(
+    ...rows.map(d => d.need),
+    ...rows.map(d => d.genmen + d.uni + d.kyufu + d.income + d.taiyo)
+  );
+  if (maxVal <= 0) return '';
+
+  // レイアウト（モバイル幅を想定したviewBox）
+  const chartH = 200;      // バー描画領域の高さ（基準値=maxValのときの高さ）
+  const topPad = 16;
+  const botPad = anyLiving ? 52 : 42; // 年次ラベル＋凡例余白（生活費ありのときは2行ラベル分だけ広げる）
+  const groupW = 96;       // 1年次あたりの幅
+  const barW = 30;
+  const gapInGroup = 8;
+  const groupGap = 20;
+  const leftPad = 12;
+  const totalW = leftPad * 2 + rows.length * groupW + (rows.length - 1) * groupGap;
+  const svgH = topPad + chartH + botPad;
+  const scale = v => (v / maxVal) * chartH;
+
+  const colors = CHART_COLORS;
+
+  let bars = '';
+  rows.forEach((d, idx) => {
+    const gx = leftPad + idx * (groupW + groupGap);
+    // 左バー：学費全体
+    const leftX = gx + (groupW / 2 - barW - gapInGroup / 2);
+    const gH = scale(d.gross);
+    const lH = scale(d.living);
+    // 学費（グレー）。生活費を上に積む場合は、境目が丸くならないよう角丸を外す
+    bars += `<rect x="${leftX}" y="${topPad + chartH - gH}" width="${barW}" height="${gH}" fill="${colors.gross}" ${d.living > 0 ? '' : 'rx="3"'}></rect>`;
+    // 棒の中に金額を白抜きで入れると学費グレーの上ではコントラストが弱いため、ここは濃いネイビーで表示
+    if (gH >= 16) {
+      bars += `<text x="${leftX + barW/2}" y="${topPad + chartH - gH/2 + 3}" text-anchor="middle" font-size="9" fill="var(--ku-navy)" font-weight="800">${(d.gross/10000).toFixed(0)}</text>`;
+    }
+    if (d.living > 0) {
+      // 生活費：学費のグレーの上に別の色で積み増す
+      bars += `<rect x="${leftX}" y="${topPad + chartH - gH - lH}" width="${barW}" height="${lH}" fill="${colors.living}" rx="3"></rect>`;
+      // 生活費は濃い色の背景なので白抜きで表示
+      if (lH >= 16) {
+        bars += `<text x="${leftX + barW/2}" y="${topPad + chartH - gH - lH/2 + 3}" text-anchor="middle" font-size="9" fill="#fff" font-weight="800">${(d.living/10000).toFixed(0)}</text>`;
+      }
+    }
+    const needH = gH + lH;
+    bars += `<text x="${leftX + barW/2}" y="${topPad + chartH - needH - 4}" text-anchor="middle" font-size="9" fill="var(--text-2)" font-weight="700">${(d.need/10000).toFixed(0)}</text>`;
+
+    // 右バー：支援＋貸与の内訳を単純に積み上げるだけ（貸与は要返還のため一番上に積む）
+    const rightX = gx + (groupW / 2 + gapInGroup / 2);
+    const segs = [
+      { v: d.genmen, c: colors.genmen, key: 'genmen' },
+      { v: d.uni,    c: colors.uni,    key: 'uni' },
+      { v: d.kyufu,  c: colors.kyufu,  key: 'kyufu' },
+      { v: d.income, c: colors.income, key: 'income' },
+      { v: d.taiyo,  c: colors.taiyo,  key: 'taiyo' }
+    ].filter(s => s.v > 0);
+    let acc = 0;
+    segs.forEach(s => {
+      const h = scale(s.v);
+      const yTop = topPad + chartH - scale(acc) - h;
+      bars += `<rect x="${rightX}" y="${yTop}" width="${barW}" height="${h}" fill="${s.c}"></rect>`;
+      // 支援側はどの色も彩度が高く白抜きで十分読めるため、学費側と違って色の使い分けは不要
+      if (h >= 16) {
+        bars += `<text x="${rightX + barW/2}" y="${yTop + h/2 + 3}" text-anchor="middle" font-size="9" fill="#fff" font-weight="800">${(s.v/10000).toFixed(0)}</text>`;
+      }
+      acc += s.v;
+    });
+    // 支援の合計が学費を超えた分は「＋◯◯」、届かない分は赤字で「-◯◯」を棒の一番上に表示する
+    const totalH = scale(acc);
+    if (d.overflow > 0) {
+      bars += `<text x="${rightX + barW/2}" y="${topPad + chartH - totalH - 4}" text-anchor="middle" font-size="9" fill="var(--ku-navy)" font-weight="800">+${(d.overflow/10000).toFixed(0)}</text>`;
+    } else if (d.shortage > 0) {
+      bars += `<text x="${rightX + barW/2}" y="${topPad + chartH - totalH - 4}" text-anchor="middle" font-size="9" fill="var(--ku-red)" font-weight="800">-${(d.shortage/10000).toFixed(0)}</text>`;
+    }
+
+    // 年次ラベル
+    bars += `<text x="${gx + groupW/2}" y="${topPad + chartH + 16}" text-anchor="middle" font-size="10" fill="var(--text-2)" font-weight="700">${d.y}年次</text>`;
+    bars += `<text x="${leftX + barW/2}" y="${topPad + chartH + 30}" text-anchor="middle" font-size="8" fill="var(--text-3)">学費</text>`;
+    if (anyLiving) bars += `<text x="${leftX + barW/2}" y="${topPad + chartH + 39}" text-anchor="middle" font-size="8" fill="var(--text-3)">＋生活費</text>`;
+    bars += `<text x="${rightX + barW/2}" y="${topPad + chartH + 30}" text-anchor="middle" font-size="8" fill="var(--text-3)">支援</text>`;
+  });
+
+  // 凡例
+  const legendItems = [
+    { c: colors.gross, label: '学費全体' }
+  ];
+  if (anyLiving) legendItems.push({ c: colors.living, label: '生活費' });
+  legendItems.push({ c: colors.genmen, label: '授業料等減免' });
+  if (showFull) legendItems.push({ c: colors.kyufu, label: '給付型奨学金' });
+  legendItems.push({ c: colors.uni, label: '独自奨学金' });
+  if (r.incomeAnnual > 0) legendItems.push({ c: colors.income, label: '仕送り・アルバイト収入' });
+  if (r.borrowTotal > 0) legendItems.push({ c: colors.taiyo, label: '貸与型・一時金（要返還）' });
+  const legend = legendItems.map(li =>
+    `<span style="display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--text-2)"><span style="width:12px;height:12px;border-radius:3px;background:${li.c};display:inline-block"></span>${li.label}</span>`
+  ).join('');
+
+  const stackDesc = `授業料等減免${showFull ? '・給付型' : ''}・独自奨学金${r.incomeAnnual > 0 ? '・仕送り/アルバイト収入' : ''}${r.borrowTotal > 0 ? '・貸与型/一時金（要返還）' : ''}`;
+
+  return `<div class="card">
+    <div class="card-title">年次別グラフ（単位：万円）</div>
+    <div style="overflow-x:auto;-webkit-overflow-scrolling:touch">
+      <svg viewBox="0 0 ${totalW} ${svgH}" width="${Math.max(totalW, 320)}" style="max-width:100%;height:auto;min-width:${Math.min(totalW, 320)}px">
+        <line x1="${leftPad}" y1="${topPad + chartH}" x2="${totalW - leftPad}" y2="${topPad + chartH}" stroke="var(--border)" stroke-width="1"></line>
+        ${bars}
+      </svg>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:10px 16px;margin-top:12px;justify-content:center">${legend}</div>
+    <div class="info-box" style="margin-top:12px">各年次の左が<strong>学費全体${anyLiving ? '＋生活費' : ''}</strong>、右が支援の積み上げです。${anyLiving ? '上の「学費のみ／生活費を含める」の切り替えで生活費を含めているため、左の棒はグレーの学費の上に<strong style="color:#7F94A3">生活費</strong>を積み上げた「実際に必要になるお金」を表しています。右の棒との差＝<strong>差引 自己資金</strong>です。' : ''}右の棒は下から「${stackDesc}」の順に積み上がり、これらの合計が左の棒（必要額）を上回る場合は、その上回った分だけ<strong>「＋◯◯」</strong>として棒の一番上に表示されます。反対に必要額に届かない場合は、その不足分が<strong style="color:var(--ku-red)">赤字の「-◯◯」</strong>として表示されます。${r.borrowTotal > 0 ? '<strong style="color:var(--ku-crimson)">貸与型・一時金（赤色）は借入であり、返還が必要です。</strong>' : ''}グラフの縦軸は表示中の年次の中で最も高い値に合わせて自動的に伸びるため、支援が学費を上回る年のバーは他の年より高く突き出て表示されます（バー上の数字：左＝必要額の合計、右＝必要額を超えた分または届かない分／単位：万円）。</div>
+  </div>`;
+}
+
+// ─── STEP 6: 貸与型の希望額（第一種・第二種の月額／一時金）を選んだときの再計算 ───
+// ─── RESULT RENDERER ───
+function calcResult() {
+  const root = byId('result-root');
+  if (!root) return;
+  if (!ST.faculty) {
+    root.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-3)"><div style="font-size:36px;margin-bottom:12px">🏫</div><p>学部が選択されていません</p></div>';
+    return;
+  }
+
+  let r;
+  try { r = computeAll(); }
+  catch(e) {
+    root.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-3)">計算中にエラーが発生しました。入力内容を確認してください。</div>';
+    console.error('computeAll error:', e);
+    return;
+  }
+
+  const showFull = r.showFull;
+  const isEnrolled = r.startYear > 1;
+  const periodYears = r.visibleYears.length;
+  const periodLabel = isEnrolled ? `残り${periodYears}年間` : `${r.nYears}年間`;
+  const firstIdx = r.startYear - 1;
+  const firstYearLabel = isEnrolled ? `${r.startYear}年次` : '1年間';
+  const commuteLabel = ST.commute === 'jitakugai' ? '自宅外通学' : '自宅通学';
+  const gzLabel = r.gz ? ZONE_LABEL[r.gz] : '対象外';
+  const kzLabel = r.kz ? (r.kz === 'IV' ? (ST.tashi ? '第Ⅳ区分（多子世帯）' : '第Ⅳ区分（理工農系・給付なし）') : ZONE_LABEL[r.kz]) : '対象外';
+  const gColor = r.gz ? '#29B6E8' : 'var(--text-3)';
+  const kColor = r.kz ? '#F5A623' : 'var(--text-3)';
+  const saving = showFull ? r.savingFull : r.savingRed;
+  const supportAny = saving > 0 || r.uniTotal4 > 0;
+
+  let html = '';
+
+  // ── Hero ──
+  html += `
+  <div class="result-hero">
+    <div class="rh-eyebrow">まなび大学 進学費用シミュレーション結果 2026年度</div>
+    <div class="rh-fac">${r.facInfo.label}　<span style="font-size:12px;color:rgba(255,255,255,0.55)">${commuteLabel}</span>${isEnrolled ? `　<span style="font-size:12px;color:#7FE0AE;font-weight:700">現在${r.startYear}年生</span>` : ''}</div>
+    <div class="rh-zone" style="color:${gColor};border-color:${gColor}">減免：${gzLabel}</div>${showFull ? ` <div class="rh-zone" style="color:${kColor};border-color:${kColor}">給付：${kzLabel}</div>` : ''}
+    <div class="rh-cols">
+      <div class="rh-col">
+        <div class="rh-col-label">${firstYearLabel}の学費（支援なし）</div>
+        <div class="rh-col-val">${fmtI(r.grossY[firstIdx])}</div>
+      </div>
+      <div class="rh-col">
+        <div class="rh-col-label">${firstYearLabel}の実質負担${showFull ? '（減免＋給付後）' : '（減免後）'}</div>
+        <div class="rh-col-val">${fmtI(r.burdenY[firstIdx])}</div>
+      </div>
+      ${supportAny ? `<div class="rh-col">
+        <div class="rh-col-label">${firstYearLabel}の軽減額</div>
+        <div class="rh-col-val" style="color:var(--ku-green)">▲ ${fmtI(r.grossY[firstIdx] - r.burdenY[firstIdx])}</div>
+      </div>` : ''}
+    </div>
+  </div>`;
+  html += `<div style="text-align:center;font-size:11px;color:var(--text-3);margin:-6px 0 14px">↓ ${periodLabel}の詳細は下記でご確認いただけます</div>`;
+
+  // ── ON/OFFトグル（給付奨学金 / 貸与奨学金） ──
+  // SHOW_SUPPORT_TOGGLE_CARD=false の間は、このカード（給付・貸与どちらのスイッチも）を丸ごと非表示にする。
+  // 将来また見せたくなった場合は true に戻すだけで復元できる（内部のON/OFF値やロジックはそのまま残してある）。
+  if (SHOW_SUPPORT_TOGGLE_CARD) {
+    const kyufuAvailable = !!r.kz && r.kyufuAnnual > 0;
+    const taiyoAvailable = REFLECT_TAIYO_IN_CALC && r.borrowTotal > 0;
+    const kyufuToggleHtml = SHOW_KYUFU_TOGGLE
+      ? `<div class="res-toggle ${ST.useKyufu ? 'on' : ''}" onclick="toggleResultOption('kyufu')">
+          <div class="rt-switch"></div>
+          <div class="rt-text">
+            <div class="rt-name">給付型奨学金</div>
+            <div class="rt-state">${ST.useKyufu ? 'ON：反映中' : 'OFF：反映しない'}${kyufuAvailable ? `（年間 ${r.kyufuAnnual.toLocaleString()}円）` : '（対象外）'}</div>
+          </div>
+        </div>`
+      : `<div class="res-toggle on" style="cursor:default">
+          <div class="rt-switch"></div>
+          <div class="rt-text">
+            <div class="rt-name">給付型奨学金</div>
+            <div class="rt-state">常に反映${kyufuAvailable ? `（年間 ${r.kyufuAnnual.toLocaleString()}円）` : '（対象外）'}</div>
+          </div>
+        </div>`;
+    html += `<div class="card">
+      <div class="card-title">試算に含める支援（ON/OFFで金額が変わります）</div>
+      <div class="res-toggle-card">
+        ${kyufuToggleHtml}
+        <div class="res-toggle ${ST.useTaiyo ? 'on' : ''}" onclick="toggleResultOption('taiyo')">
+          <div class="rt-switch"></div>
+          <div class="rt-text">
+            <div class="rt-name">貸与型奨学金・一時金</div>
+            <div class="rt-state">${ST.useTaiyo ? 'ON：反映中' : 'OFF：反映しない'}${taiyoAvailable ? '（要返還）' : '（未設定）'}</div>
+          </div>
+        </div>
+      </div>
+      ${(SHOW_KYUFU_TOGGLE && ST.useKyufu && !kyufuAvailable) ? `<div class="info-box" style="margin-top:12px">※ 給付型奨学金はこの条件では対象外（0円）のため、ONにしても金額は変わりません。</div>` : ''}
+      ${(ST.useTaiyo && !taiyoAvailable) ? `<div class="info-box" style="margin-top:12px">※ 貸与型奨学金・一時金は金額を入力していないため、ONにしても金額は変わりません。</div>` : ''}
+      <div class="info-box" style="margin-top:12px">貸与型奨学金は<strong>要返還</strong>です。給付型奨学金・授業料等減免・独自奨学金は返還不要で、常に反映しています。</div>
+    </div>`;
+  }
+
+  // ── 支援なし vs 支援あり 比較（{firstLabel}のみ・入学金／授業料／その他に分けて表示） ──
+  const headClass = showFull ? 'with-full' : 'with-sup';
+  const headLabel = showFull ? '🎓 支援あり（減免＋給付型）' : '📋 支援あり（減免のみ）';
+  const firstLabel = isEnrolled ? `${r.startYear}年次` : '初年度';
+  const firstYearNum = r.startYear;
+  const supY1 = r.burdenY[firstIdx];
+
+  const admissionFee = isEnrolled ? 0 : r.tuition.admissionFee;
+  const tuitionFee = tuitionOfYear(r.tuition, firstYearNum);
+  const otherFee = r.tuition.fees.reduce((s, f) => s + (f.y[firstYearNum - 1] || 0), 0);
+
+  // STEP5で生活費を「含める」にしている場合のみ、比較パネルに学費/生活費の切り替えトグルを出す
+  const showLivingToggle = ST.livingOn;
+  const includeLiving = showLivingToggle && ST.compareIncludeLiving;
+  const livingHere = includeLiving ? r.livingY[firstIdx] : 0;
+
+  // 支援あり側：
+  // ・入学金の減免は、まず「授業料等減免」でのみ決まる固定額（入学金 − 入学金減免）を割り当てる。
+  //   授業料等減免は入学金・授業料それぞれに専用の上限があるため、ここは常にこの額になる。
+  // ・給付型・独自奨学金（現金支給）は、まず授業料→その他の順に充当する。
+  // ・それでも使い切れずに残った分は、入学金へ、さらに残れば（生活費を含める場合のみ）生活費へも充当する。
+  //   これにより各行の合計は、上のカード・グラフが使っている「実質負担」の金額と必ず一致する。
+  let admissionAfter = Math.max(0, admissionFee - (isEnrolled ? 0 : r.reductionAdmission));
+  const admissionAfterGenmenOnly = admissionAfter;
+  let pool = (showFull ? r.kyufuAnnual : 0) + r.uniY[firstIdx];
+  let tuitionAfter = Math.max(0, tuitionFee - r.redTuitionY[firstIdx]);
+  let use = Math.min(pool, tuitionAfter); tuitionAfter -= use; pool -= use;
+  let otherAfter = otherFee;
+  use = Math.min(pool, otherAfter); otherAfter -= use; pool -= use;
+  use = Math.min(pool, admissionAfter); admissionAfter -= use; pool -= use;
+  const admissionCascaded = admissionAfterGenmenOnly - admissionAfter; // 入学金にまで回した金額（0なら発生なし）
+  let livingAfter = livingHere;
+  if (includeLiving) { use = Math.min(pool, livingAfter); livingAfter -= use; pool -= use; }
+
+  const noSupTotal = r.grossY[firstIdx] + livingHere;
+  const supTotal = admissionAfter + tuitionAfter + otherAfter + livingAfter;
+
+  html += `<div class="compare-panel-wrap">
+    ${showLivingToggle ? `<div class="toggle-row" style="margin-bottom:10px">
+      <button class="tog-btn${includeLiving ? '' : ' sel'}" onclick="setCompareLiving(false)">学費のみ</button>
+      <button class="tog-btn${includeLiving ? ' sel' : ''}" onclick="setCompareLiving(true)">生活費を含める</button>
+    </div>` : ''}
+    <div class="compare-panel">
+    <div class="card" style="padding:0;overflow:hidden">
+      <div class="cp-head no-sup">⬛ 支援なし（${firstLabel}）</div>
+      <div class="cp-body">
+        ${!isEnrolled ? `<div class="cp-row"><span class="cp-row-label">入学金</span><span class="cp-row-val">${admissionFee.toLocaleString()}円</span></div>` : ''}
+        <div class="cp-row"><span class="cp-row-label">授業料</span><span class="cp-row-val">${tuitionFee.toLocaleString()}円</span></div>
+        <div class="cp-row"><span class="cp-row-label">その他（諸費）</span><span class="cp-row-val">${otherFee.toLocaleString()}円</span></div>
+        ${includeLiving ? `<div class="cp-row"><span class="cp-row-label">生活費</span><span class="cp-row-val">${livingHere.toLocaleString()}円</span></div>` : ''}
+        <div class="cp-row"><span class="cp-row-label">合計</span><span class="cp-row-val">${noSupTotal.toLocaleString()}円</span></div>
+      </div>
+    </div>
+    <div class="card" style="padding:0;overflow:hidden">
+      <div class="cp-head ${headClass}">${headLabel}（${firstLabel}）</div>
+      <div class="cp-body">
+        ${!isEnrolled ? `<div class="cp-row"><span class="cp-row-label">入学金（実質）</span><span class="cp-row-val">${admissionAfter.toLocaleString()}円</span></div>` : ''}
+        <div class="cp-row"><span class="cp-row-label">授業料（実質）</span><span class="cp-row-val">${tuitionAfter.toLocaleString()}円</span></div>
+        <div class="cp-row"><span class="cp-row-label">その他（実質）</span><span class="cp-row-val">${otherAfter.toLocaleString()}円</span></div>
+        ${includeLiving ? `<div class="cp-row"><span class="cp-row-label">生活費（実質）</span><span class="cp-row-val">${livingAfter.toLocaleString()}円</span></div>` : ''}
+        <div class="cp-row"><span class="cp-row-label">合計</span><span class="cp-row-val">${supTotal.toLocaleString()}円</span></div>
+        ${supportAny ? `<div class="cp-saving ${showFull ? 'green' : 'crimson'}">${firstLabel}で ▲${fmtI(noSupTotal - supTotal)} 軽減</div>` : ''}
+        ${admissionCascaded > 0 ? `<div class="info-box" style="margin-top:10px;font-size:11px">※ 授業料等減免による入学金の減免は${admissionAfterGenmenOnly.toLocaleString()}円ですが、給付型・独自奨学金が授業料・その他で使い切れず${admissionCascaded.toLocaleString()}円分が残ったため、入学金にも充当して表示しています。</div>` : ''}
+        ${includeLiving ? `<div class="info-box" style="margin-top:10px;font-size:11px">※ 生活費（月額${ST.livingM.toLocaleString()}円）は仕送り・アルバイトの収入を差し引く前の金額です。仕送り・アルバイトを含めた最終的な自己資金は、下の「生活費・仕送り・アルバイト」カードでご確認ください。</div>` : ''}
+        ${r.borrowTotal > 0 ? `<div class="info-box" style="margin-top:10px;font-size:11px">※ この比較には<strong>返還不要の支援のみ</strong>を反映しています。STEP6で入力した貸与型・一時金（借入）は含めていません。</div>` : ''}
+      </div>
+    </div>
+  </div></div>`;
+
+  // ── 受けられる支援の内訳（授業料等減免・給付型奨学金・独自奨学金） ──
+  html += supportBreakdownCardHtml(r, showFull, periodLabel, firstIdx, isEnrolled, gzLabel, kzLabel);
+
+  // ── 棒グラフ（年次別：学費全体 vs 実質負担の内訳積み上げ） ──
+  html += buildYearlyChart(r, showFull, periodLabel, includeLiving);
+
+  // ── 年次別テーブル ──
+  // 列の定義を1か所にまとめ、パソコン用の表とスマートフォン用のカード表示を
+  // 同じデータから組み立てる（見せ方が違うだけで、中身は完全に同じ）。
+  //   h     … カード表示での項目名
+  //   th    … 表のヘッダー（省略時は h をそのまま使う）
+  //   cell  … 各年次の値／total … 合計欄の値
+  const yrCols = [
+    { h: '学費（入学金・諸費込）', th: '学費<br><span style="font-weight:400">（入学金・諸費込／万円）</span>', cls: '',
+      cell: i => fmtMan(r.grossY[i]), total: () => fmtMan(r.noSup4y) },
+    { h: '授業料等減免', cls: 'saving-cell',
+      cell: i => { const v = r.redTuitionY[i] + (i === 0 ? r.reductionAdmission : 0); return v > 0 ? '▲' + fmtMan(v) : '—'; },
+      total: () => r.genmenTotal4 > 0 ? '▲' + fmtMan(r.genmenTotal4) : '—' },
+    ...(showFull ? [{ h: '給付型奨学金', cls: 'saving-cell',
+      cell: () => r.kyufuAnnual > 0 ? '▲' + fmtMan(r.kyufuAnnual) : '—',
+      total: () => '—' }] : []),
+    { h: '独自奨学金', cls: 'saving-cell',
+      cell: i => r.uniY[i] > 0 ? '▲' + fmtMan(r.uniY[i]) : '—',
+      total: () => r.uniTotal4 > 0 ? '▲' + fmtMan(r.uniTotal4) : '—' },
+    { h: '実質負担', cls: '', emph: true,
+      cell: i => fmtMan(r.burdenY[i]), total: () => fmtMan(r.burden4y) },
+    ...(ST.livingOn ? [{ h: '生活費', cls: '',
+      cell: i => r.livingY[i] > 0 ? '＋' + fmtMan(r.livingY[i]) : '—',
+      total: () => r.livingTotal4 > 0 ? '＋' + fmtMan(r.livingTotal4) : '—' }] : []),
+    ...((ST.shiokuriOn || ST.baitoOn) ? [{ h: '仕送り・アルバイト収入', th: '仕送り・バイト<br><span style="font-weight:400">収入</span>', cls: 'saving-cell',
+      cell: i => r.incomeY[i] > 0 ? '▲' + fmtMan(r.incomeY[i]) : '—',
+      total: () => r.incomeTotal4 > 0 ? '▲' + fmtMan(r.incomeTotal4) : '—' }] : []),
+    ...(r.borrowTotal > 0 ? [{ h: '貸与型・一時金（要返還）', th: '貸与型・一時金<br><span style="font-weight:400">（要返還）</span>', cls: 'taiyo-cell',
+      cell: i => { const v = r.taiyoCoverAnnual + (i === 0 ? r.ichijikinApplied : 0); return v > 0 ? '▲' + fmtMan(v) : '—'; },
+      total: () => r.taiyoScheduleTotalVisible > 0 ? '▲' + fmtMan(r.taiyoScheduleTotalVisible) : '—' }] : []),
+    { h: '差引 自己資金', cls: '', final: true,
+      cell: i => fmtMan(r.selfY[i]), total: () => fmtMan(r.self4y) }
+  ];
+
+  const yrHead = `<th>年次</th>` + yrCols.map(c => `<th>${c.th || c.h}</th>`).join('');
+  const yrRows = r.visibleYears.map(y => {
+    const i = y - 1;
+    return `<tr><td>${y}年次</td>` + yrCols.map(c =>
+      `<td class="${c.cls}">${c.emph ? `<strong>${c.cell(i)}</strong>` : c.cell(i)}</td>`).join('') + `</tr>`;
+  }).join('');
+  const yrTotalRow = `<tr><td>合計</td>` + yrCols.map(c => `<td class="${c.cls}">${c.total()}</td>`).join('') + `</tr>`;
+
+  // スマートフォン幅（640px以下）では、横スクロールになる表の代わりにこのカードを表示する
+  const yrCardRows = (getVal) => yrCols.map(c =>
+    `<div class="yr-card-row${c.final ? ' is-final' : ''}${c.emph ? ' is-emph' : ''}">
+      <span>${c.h}</span><span class="${c.cls}">${getVal(c)}</span>
+    </div>`).join('');
+  const yrCards = r.visibleYears.map(y => {
+    const i = y - 1;
+    return `<div class="yr-card"><div class="yr-card-head">${y}年次</div>${yrCardRows(c => c.cell(i))}</div>`;
+  }).join('') +
+    `<div class="yr-card yr-card-total"><div class="yr-card-head">合計（${periodLabel}）</div>${yrCardRows(c => c.total())}</div>`;
+
+  html += `<details class="card fee-detail">
+    <summary class="card-title fee-detail-summary">年次別の負担額${r.startYear > 1 ? `（${r.startYear}年次〜卒業まで）` : ''}<span class="fee-detail-caret"></span></summary>
+    <div class="yr-table-wrap">
+      <table class="yr-table">
+        <thead><tr>${yrHead}</tr></thead>
+        <tbody>${yrRows}${yrTotalRow}</tbody>
+      </table>
+    </div>
+    <div class="yr-cards">${yrCards}</div>
+    <div class="info-box" style="margin-top:12px">※ この表の金額はすべて万円単位に四捨五入して表示しています（例：31.97万円→32万円）。生活費は学費とは別にかかる金額として実質負担に上乗せしています。詳細な内訳は上のカードをご確認ください。</div>
+    ${r.startYear > 1 ? `<div class="info-box" style="margin-top:12px">※ 在学状況の入力に基づき、${r.startYear}年次（現在の学年）から卒業までの残り${r.visibleYears.length}年間分のみを表示しています。</div>` : ''}
+    ${showFull ? `<div class="info-box" style="margin-top:12px">※ 給付型奨学金は年度ごとに同額が継続する前提のため、この表では累計（合計）を出していません。年間額は各年次の欄をご確認ください。</div>` : ''}
+    ${!showFull && r.kz && r.kyufuAnnual > 0 ? `<div class="info-box" style="margin-top:12px">※ 「給付型奨学金」トグルがOFFのため、給付型奨学金（年間 ${r.kyufuAnnual.toLocaleString()}円）はこの表に含めていません。上のトグルでONにすると反映されます。</div>` : ''}
+    ${r.clamped.length > 0 && showFull ? `<div class="info-box" style="margin-top:12px">※ ${r.clamped.join('・')}年次は減免・給付・独自奨学金の合計が学費を上回るため、実質負担を0円として表示しています。</div>` : ''}
+    ${ST.livingOn ? `<div class="info-box" style="margin-top:12px">※ 「差引 自己資金」は、実質負担に生活費（年間 ${r.livingAnnual.toLocaleString()}円 × ${periodYears}年 ＝ ${periodLabel}で ${r.livingTotal4.toLocaleString()}円）を加えたうえで計算しています。</div>` : ''}
+    ${(ST.shiokuriOn || ST.baitoOn) ? `<div class="info-box" style="margin-top:12px">※ 「差引 自己資金」は、仕送り・アルバイトの収入（年間 ${r.incomeAnnual.toLocaleString()}円 × ${periodYears}年 ＝ ${periodLabel}で ${r.incomeTotal4.toLocaleString()}円）を差し引いた金額です。</div>` : ''}
+    ${r.borrowTotal > 0 ? `<div class="info-box" style="margin-top:12px;border-color:rgba(192,57,43,0.3);background:rgba(192,57,43,0.05)">※ 「貸与型・一時金」は<strong>借入</strong>です。差引 自己資金からは差し引いていますが、<strong style="color:var(--ku-red)">卒業までの借入総額 ${r.borrowTotal.toLocaleString()}円（利子を除く）は卒業後に返還が必要</strong>です。</div>` : ''}
+  </details>`;
+
+  // ── 利用できる貸与型（金額は試算に含めず、借りられる範囲の案内のみ） ──
+  html += taiyoGuideCardHtml(r);
+
+  // ── 生活費・仕送り・アルバイト（差引自己資金の内訳） ──
+  if (ST.livingOn || ST.shiokuriOn || ST.baitoOn || r.borrowTotal > 0) {
+    const spillover2 = r.burdenY[firstIdx] - r.rawNetY[firstIdx];
+    const t1Y1 = ST.t1PlanM || 0, t2Y1 = ST.t2PlanM || 0;
+    const t1AnnualY1 = t1Y1 * 12, t2AnnualY1 = t2Y1 * 12;
+    const ijY1 = (firstIdx === 0) ? (ST.ichijikinPlanAmt || 0) : 0;
+    // グラフと同じ色の四角（■）を行の先頭に付け、どの内訳がグラフのどの色に対応するか一目で分かるようにする
+    const sq = color => `<span style="display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;background:${color};flex-shrink:0"></span>`;
+    const row = (color, label, valueHtml, note) => `<div style="display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px dashed rgba(216,231,221,0.6);padding:4px 0">
+        <span style="color:var(--text-2);display:flex;align-items:baseline">${color ? sq(color) : ''}<span>${label}${note ? `<br><span style="font-size:10px;margin-left:16px">${note}</span>` : ''}</span></span>
+        <strong style="text-align:right">${valueHtml}</strong>
+      </div>`;
+    const taiyoRow = (label, monthlyVal, annualVal, note) => `<div style="display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px dashed rgba(192,57,43,0.2);padding:4px 0">
+        <span style="color:var(--ku-red);display:flex;align-items:baseline">${sq('var(--ku-red)')}<span>${label}<br><span style="font-size:10px;margin-left:16px">${note}</span></span></span>
+        <strong style="color:var(--ku-red);text-align:right">${monthlyVal !== null ? `▲${monthlyVal.toLocaleString()}円/月（年間 ${annualVal.toLocaleString()}円）` : `▲${annualVal.toLocaleString()}円`}</strong>
+      </div>`;
+
+    const grossFirst = r.grossY[firstIdx];
+    const genmenFirst = r.redTuitionY[firstIdx] + (firstIdx === 0 ? r.reductionAdmission : 0);
+    const kyufuFirst = showFull ? r.kyufuAnnual : 0;
+    const uniFirst = r.uniY[firstIdx];
+
+    html += `<div class="card">
+      <div class="card-title">生活費・仕送り・アルバイト（差引自己資金の内訳）</div>
+      <div style="font-size:12px;line-height:2.1">
+        ${row(CHART_COLORS.gross, `${firstLabel}の学費`, `${grossFirst.toLocaleString()}円`)}
+        ${genmenFirst > 0 ? row(CHART_COLORS.genmen, '授業料等減免', `▲${genmenFirst.toLocaleString()}円`) : ''}
+        ${kyufuFirst > 0 ? row(CHART_COLORS.kyufu, '給付型奨学金', `▲${kyufuFirst.toLocaleString()}円`) : ''}
+        ${uniFirst > 0 ? row(CHART_COLORS.uni, '独自奨学金', `▲${uniFirst.toLocaleString()}円`) : ''}
+        <div style="display:flex;justify-content:space-between;border-bottom:1px dashed rgba(216,231,221,0.6);padding:4px 0"><span style="color:var(--text-2)">${firstLabel}の実質負担（学費）</span><strong>${r.burdenY[firstIdx].toLocaleString()}円</strong></div>
+        ${spillover2 > 0 ? `<div style="display:flex;justify-content:space-between;border-bottom:1px dashed rgba(216,231,221,0.6);padding:4px 0"><span style="color:var(--text-2)">給付型・独自奨学金の余り（生活費に充当）</span><strong>▲${spillover2.toLocaleString()}円</strong></div>` : ''}
+        ${ST.livingOn ? row(CHART_COLORS.living, `生活費（月額${ST.livingM.toLocaleString()}円 × 12か月）`, `＋${r.livingAnnual.toLocaleString()}円`) : ''}
+        ${ST.shiokuriOn ? row(CHART_COLORS.income, '仕送り月額', `▲${ST.shiokuriM.toLocaleString()}円/月（年間 ${(ST.shiokuriM * 12).toLocaleString()}円）`) : ''}
+        ${ST.baitoOn ? row(CHART_COLORS.income, 'アルバイト月額（額面目安）', `▲${ST.baitoM.toLocaleString()}円/月（年間 ${(ST.baitoM * 12).toLocaleString()}円）`) : ''}
+        ${t1Y1 > 0 ? taiyoRow('第一種奨学金（無利子・借入）', t1Y1, t1AnnualY1, '卒業後に返還が必要（利子なし）') : ''}
+        ${t2Y1 > 0 ? taiyoRow('第二種奨学金（有利子・借入）', t2Y1, t2AnnualY1, '卒業後に利子を付けて返還が必要') : ''}
+        ${ijY1 > 0 ? taiyoRow('入学時特別増額（一時金・借入）', null, ijY1, '初年度のみ・有利子で卒業後に返還が必要') : ''}
+        <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:14px"><span style="font-weight:700">${firstLabel}の差引 自己資金</span><strong style="color:var(--ku-navy)">${r.selfY[firstIdx].toLocaleString()}円</strong></div>
+      </div>
+      <div class="info-box" style="margin-top:12px">
+        色付きの四角（■）は、下の年次別グラフの色に対応しています。生活費は<strong>学費とは別に</strong>かかる金額として実質負担に上乗せし、仕送り・アルバイトの収入は<strong>そこから差し引いて</strong>「差引 自己資金」を計算しています。仕送りは<strong>生活費・学費のどちらにも充てられる</strong>ものとして、合計から差し引いています。${spillover2 > 0 ? `給付型・独自奨学金が学費を上回った分（${spillover2.toLocaleString()}円）は、実際に手元に残る現金として生活費の負担にも充てています。` : ''}${r.borrowTotal > 0 ? `貸与型奨学金・一時金（赤字の行）も自己資金からは差し引いていますが、これは<strong>借入</strong>のため<strong style="color:var(--ku-red)">卒業後に返還が必要</strong>です。` : ''}STEP5でいつでも金額を変更・「利用しない」に戻すことができ、その場合は計算から自動的に除外されます。
+      </div>
+    </div>`;
+  }
+
+  // ── 注意事項 ──
+  html += `<div class="card">
+    <div class="card-title">ご確認ください</div>
+    <div class="notice-box">
+      <p>・学費は2026年度入学生に適用される金額です（エクセルデータより）。</p>
+      <p>・給付型奨学金・授業料等減免の区分は、別途「区分判定ソフト」で確認した結果を入力してください。実際の採否・金額は大学・JASSOの審査によります。</p>
+      <p>・給付型奨学金・授業料等減免と第一種奨学金を併用する場合は、併給調整により第一種の月額が制限されます（第Ⅰ・Ⅱ区分は利用可・月額0円）。</p>
+      <p>・貸与型奨学金・一時金は、「利用できる貸与型奨学金」カードで希望額を選んだ場合のみ試算・グラフに反映されます（「利用しない」のままなら含まれません）。</p>
+      <p>・後援会費・生協出資金・研究雑誌費などその他諸費は含まれていません（教育後援費・交友会費は含む）。</p>
+      <p>・詳細は まなび大学 学費ページ（準備中）および <a href="https://www.jasso.go.jp" target="_blank">JASSO公式サイト</a> をご確認ください。</p>
+    </div>
+  </div>`;
+
+  // ── 計算式（検証用） ──
+  html += verificationFormulaCardHtml(r);
+
+  root.innerHTML = html;
+  buildResultToc();
+}
+
+// ─── 結果画面の目次（スマートフォンでの長いスクロール対策） ───
+// 結果を描き直すたびに、result-root 直下のカードを走査して見出しを拾い、
+// 先頭（ヒーローカードの直後）にジャンプ用のリンク一覧を差し込む。
+// カードの構成が変わっても自動で追従するので、カード側に手を入れる必要はない。
+function buildResultToc() {
+  const root = byId('result-root');
+  if (!root) return;
+  const items = [];
+  let n = 0;
+  Array.from(root.children).forEach(el => {
+    if (el.classList.contains('result-toc')) return;
+    let label = '';
+    if (el.classList.contains('result-hero')) label = '結果サマリー';
+    else if (el.classList.contains('compare-panel-wrap')) label = '支援なし / 支援あり の比較';
+    else {
+      const t = el.querySelector('.card-title');
+      if (t) label = t.textContent.replace(/\s+/g, ' ').trim();
+    }
+    if (!label) return;
+    n++;
+    const id = 'res-sec-' + n;
+    el.id = id;
+    items.push({ id, label });
+  });
+  if (items.length < 3) return;
+
+  const toc = document.createElement('div');
+  toc.className = 'card result-toc';
+  toc.innerHTML = `<div class="card-title">結果の目次（タップで移動できます）</div>
+    <div class="toc-list">${items.map(it =>
+      `<a class="toc-link" href="#${it.id}" onclick="return jumpToSection('${it.id}')">${it.label}</a>`).join('')}</div>`;
+
+  // ヒーローカードとその下の案内文の後ろに置く（結果の要約を先に見せるため）
+  const hero = root.querySelector('.result-hero');
+  const note = hero ? hero.nextElementSibling : null;
+  const anchor = note ? note.nextSibling : (hero ? hero.nextSibling : root.firstChild);
+  root.insertBefore(toc, anchor);
+}
+
+// 目次のリンクから該当カードへスクロールする。
+// 折りたたみ（details）のカードは開いた状態にしてから移動する。
+function jumpToSection(id) {
+  const el = byId(id);
+  if (!el) return true;
+  if (el.tagName === 'DETAILS' && !el.open) el.open = true;
+  const header = document.querySelector('.site-header');
+  const offset = (header ? header.offsetHeight : 0) + 12;
+  const y = el.getBoundingClientRect().top + window.pageYOffset - offset;
+  window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+  return false;
+}
+
+// ─── 上へ戻るボタン（ある程度スクロールしたときだけ表示） ───
+function scrollToTop() {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function syncToTopBtn() {
+  const btn = byId('to-top');
+  if (!btn) return;
+  if (window.pageYOffset > 400) btn.classList.add('show');
+  else btn.classList.remove('show');
+}
+
+// ─── アプリAからの引き継ぎ（URLパラメータ） ───
+// アプリA（まなびシード 奨学金シミュレーター）の結果画面から
+//   ?from=A&kz=II&gz=II&te=ichini&commute=jitakugai&tashi=0&ss=0&nc=2&sector=private&stype=univ
+// の形で渡ってくる。氏名や収入額そのものは渡さないため個人情報にはあたらない。
+// 受け取った値でSTEP3を自動入力し、引き継いだことを画面に明示する。
+const HANDOFF = { active: false, params: null, warn: '' };
+
+function readHandoff() {
+  let q;
+  try { q = new URLSearchParams(location.search); } catch (e) { return; }
+  if (q.get('from') !== 'A') return;
+
+  const ZONES = ['I', 'II', 'III', 'IV'];
+  const pick = (v, allow) => (v && allow.includes(v)) ? v : null;
+
+  const kz = pick(q.get('kz'), ZONES);
+  const gz = pick(q.get('gz'), ZONES);
+  const te = pick(q.get('te'), ['heiyo', 'ichini', 'ni', 'none']);
+  const commute = pick(q.get('commute'), ['jitaku', 'jitakugai']);
+  const tashi = q.get('tashi') === '1';
+  const ss = q.get('ss') === '1';
+  const sector = q.get('sector') || '';
+  const stype = q.get('stype') || '';
+
+  // 給付・減免は「対象外」も明示的に受け取る（none）
+  ST.kyufuZone  = kz ? kz : (q.get('kz') === 'none' ? 'none' : null);
+  ST.genmenZone = gz ? gz : (q.get('gz') === 'none' ? 'none' : null);
+  if (te) ST.taiyoElig = te;
+  if (commute) ST.commute = commute;
+  ST.tashi = tashi;
+  ST.specialSupport = ss;
+
+  // 多子世帯の場合、アプリA側は減免ゾーンを 'many' として扱う。
+  // アプリBは ST.tashi のフラグで満額減免を適用するため、ここではゾーンを維持しフラグのみ立てる。
+  HANDOFF.active = true;
+  HANDOFF.params = { kz: ST.kyufuZone, gz: ST.genmenZone, te: ST.taiyoElig, commute: ST.commute, tashi, ss, sector, stype };
+
+  // このアプリはまなび大学（私立大学）専用のため、国公立・短大・専門学校を選んでいた場合は注意を出す
+  if (sector && sector !== 'private') {
+    HANDOFF.warn = 'アプリAでは国公立を選択されていました。この画面はまなび大学（私立大学）の学費で試算しますので、金額は私立大学のものになります。';
+  } else if (stype && stype !== 'univ') {
+    HANDOFF.warn = 'アプリAでは大学以外の学校種別を選択されていました。この画面はまなび大学（4年制・6年制大学）の学費で試算します。';
+  }
+}
+
+// STEP3のボタン群に、引き継いだ値の選択状態を反映する
+function applyHandoffUI() {
+  if (!HANDOFF.active) return;
+  const mark = (prefix, val) => {
+    if (!val) return;
+    document.querySelectorAll(`[id^="${prefix}"]`).forEach(b => b.classList.remove('sel'));
+    const btn = byId(prefix + val);
+    if (btn) btn.classList.add('sel');
+  };
+  mark('kz-', ST.kyufuZone);
+  mark('gz-', ST.genmenZone);
+  mark('te-', ST.taiyoElig);
+  if (ST.commute) {
+    document.querySelectorAll('#cm-jitaku, #cm-jitakugai').forEach(b => b.classList.remove('sel'));
+    const cb = byId('cm-' + ST.commute);
+    if (cb) cb.classList.add('sel');
+  }
+  document.querySelectorAll('#tashi-yes, #tashi-no').forEach(b => b.classList.remove('sel'));
+  const tb = byId(ST.tashi ? 'tashi-yes' : 'tashi-no');
+  if (tb) tb.classList.add('sel');
+  const sb = byId(ST.specialSupport ? 'sk-yes' : 'sk-no');
+  if (sb) {
+    document.querySelectorAll('#sk-yes, #sk-no').forEach(b => b.classList.remove('sel'));
+    sb.classList.add('sel');
+    const blk = byId('sk-block');
+    if (blk) blk.style.display = ST.specialSupport ? 'block' : 'none';
+  }
+
+  // 引き継ぎを利用者に明示するバナーをSTEP3の先頭に差し込む
+  const host = byId('step-3');
+  if (host) {
+    const zoneName = z => ({ I: '第Ⅰ区分', II: '第Ⅱ区分', III: '第Ⅲ区分', IV: '第Ⅳ区分', none: '対象外' })[z] || '未設定';
+    const teName = { heiyo: '併用貸与まで可', ichini: '第一種・第二種（併用不可）', ni: '第二種のみ', none: '対象外' };
+    const banner = document.createElement('div');
+    banner.className = 'card';
+    banner.style.cssText = 'border-color:var(--ku-sky);background:rgba(46,158,143,0.06)';
+    banner.innerHTML = `
+      <div class="card-title" style="color:var(--ku-navy)">✓ アプリAの判定結果を引き継ぎました</div>
+      <div style="font-size:13px;line-height:2;margin-top:4px">
+        給付型：<strong>${zoneName(ST.kyufuZone)}</strong>${ST.tashi ? '（多子世帯）' : ''}　／　
+        授業料等減免：<strong>${zoneName(ST.genmenZone)}</strong>　／　
+        貸与型：<strong>${teName[ST.taiyoElig] || '未設定'}</strong>　／　
+        通学：<strong>${ST.commute === 'jitakugai' ? '自宅外' : '自宅'}</strong>
+      </div>
+      <div style="font-size:12px;color:var(--text-2);margin-top:8px">下の各項目にはこの内容が反映されています。修正したい場合はそのままボタンを選び直してください。</div>
+      ${HANDOFF.warn ? `<div class="hazard-box" style="margin-top:10px"><span class="hz-title">⚠ ご確認ください</span>${HANDOFF.warn}</div>` : ''}`;
+    host.insertBefore(banner, host.firstChild);
+  }
+  syncSupportUI();
+}
+
+// ─── INIT ───
+document.addEventListener('DOMContentLoaded', () => {
+  buildIncomeOptions('sk-amount', SHIOKURI_MAX);  // 仕送り（0〜月30万円）
+  buildIncomeOptions('bt-amount', BAITO_MAX);     // アルバイト（0〜月20万円）
+  readHandoff();
+  applyHandoffUI();
+  syncTaiyoPreview();
+  updateTabs(1);
+  window.addEventListener('scroll', syncToTopBtn, { passive: true });
+  syncToTopBtn();
+});
+</script>
+
+
+</body>
+</html>
